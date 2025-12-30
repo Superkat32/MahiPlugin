@@ -1,0 +1,5 @@
+// The Plugin's main ID (equivalent to MOD_ID) - used for registration and filename export.
+export const ID: string = "mahi";
+
+// The Plugin's current version (similar to gradle.properties info).
+export const VERSION: string = "0.0.1";
