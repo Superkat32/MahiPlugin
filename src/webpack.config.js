@@ -1,5 +1,3 @@
-import {ID} from "./ts/constants";
-
 const PathModule = require('path')
 
 module.exports = {
@@ -20,7 +18,7 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-        filename: `${ID}.js`,
+        filename: `mahi.js`,
         path: PathModule.resolve(__dirname, '..')
     }
 }

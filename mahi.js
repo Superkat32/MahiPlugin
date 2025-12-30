@@ -1,201 +1,340 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./ts/constants.ts"
+/*!*************************!*\
+  !*** ./ts/constants.ts ***!
+  \*************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CODEC_NAME: () => (/* binding */ CODEC_NAME),
+/* harmony export */   ID: () => (/* binding */ ID),
+/* harmony export */   VERSION: () => (/* binding */ VERSION)
+/* harmony export */ });
+// The Plugin's main ID (equivalent to MOD_ID) - used for registration and filename export.
+var ID = "mahi";
+// The Plugin's current version (similar to gradle.properties info).
+var VERSION = "0.0.1";
+// The name of the Mahi Entity codec
+var CODEC_NAME = "mahi_entity";
+
+
+/***/ },
+
+/***/ "./ts/format/mahiEntityFormat.ts"
+/*!***************************************!*\
+  !*** ./ts/format/mahiEntityFormat.ts ***!
+  \***************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MAHI_CODEC: () => (/* binding */ MAHI_CODEC),
+/* harmony export */   MAHI_FORMAT: () => (/* binding */ MAHI_FORMAT),
+/* harmony export */   isFormatMahiEntity: () => (/* binding */ isFormatMahiEntity)
+/* harmony export */ });
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants */ "./ts/constants.ts");
+/* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./templates */ "./ts/format/templates.ts");
+
+
+var MAHI_CODEC = new Codec(_constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_NAME, {
+    name: "Mahi Entity",
+    extension: "java",
+    remember: true,
+    support_partial_export: true,
+    load_filter: {
+        type: "text",
+        extensions: ["java"],
+    },
+    compile: function (options) {
+    },
+    parse: function (data, path, args) {
+    },
+    afterDownload: function (path) {
+    },
+    afterSave: function (path) {
+    },
+    fileName: function () {
+        return "file";
+    }
+});
+MAHI_CODEC.templates = _templates__WEBPACK_IMPORTED_MODULE_1__.TEMPLATES;
+// codec.compileAnimations = function(animations = Animation.all) {
+//
+// }
+var MAHI_FORMAT = new ModelFormat(_constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_NAME, {
+    id: _constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_NAME,
+    icon: "fa-fish-fins",
+    category: "minecraft",
+    target: "Minecraft: Java Edition",
+    format_page: {
+        content: [
+            { type: 'h3', text: tl('mode.start.format.informations') },
+            { text: "* ".concat(tl('format.modded_entity.info.integer_size'), "\n\t\t\t\t\t* ").concat(tl('format.modded_entity.info.format')).replace(/\t+/g, '')
+            }
+        ]
+    },
+    codec: MAHI_CODEC,
+    node_name_regex: "\\w",
+    box_uv: true,
+    box_uv_float_size: true,
+    single_texture: true,
+    bone_rig: true,
+    centered_grid: true,
+    rotate_cubes: true,
+    integer_size: true,
+    animation_mode: true,
+    pbr: true
+});
+MAHI_CODEC.format = MAHI_FORMAT;
+function isFormatMahiEntity() {
+    return Format == MAHI_FORMAT;
+}
+
+
+/***/ },
+
+/***/ "./ts/format/mahiExportActions.ts"
+/*!****************************************!*\
+  !*** ./ts/format/mahiExportActions.ts ***!
+  \****************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   loadMahiActions: () => (/* binding */ loadMahiActions),
+/* harmony export */   unloadMahiActions: () => (/* binding */ unloadMahiActions)
+/* harmony export */ });
+/* harmony import */ var _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./mahiEntityFormat */ "./ts/format/mahiEntityFormat.ts");
+
+var exportModel = new Action("export_model", {
+    name: "Export Mahi Model",
+    icon: "view_in_ar",
+    condition: function () { return (0,_mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.isFormatMahiEntity)(); },
+    click: function () {
+        _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.export();
+    }
+});
+function loadMahiActions() {
+    MenuBar.addAction(exportModel, "file.export.0");
+}
+function unloadMahiActions() {
+    exportModel.delete();
+}
+
+
+/***/ },
+
+/***/ "./ts/format/templates.ts"
+/*!********************************!*\
+  !*** ./ts/format/templates.ts ***!
+  \********************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TEMPLATES: () => (/* binding */ TEMPLATES),
+/* harmony export */   createAnimationTemplate: () => (/* binding */ createAnimationTemplate),
+/* harmony export */   createModelTemplate: () => (/* binding */ createModelTemplate),
+/* harmony export */   createRenderStateTemplate: () => (/* binding */ createRenderStateTemplate),
+/* harmony export */   createRendererTemplate: () => (/* binding */ createRendererTemplate)
+/* harmony export */ });
+/* harmony import */ var _templates_modelTemplates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./templates/modelTemplates */ "./ts/format/templates/modelTemplates.ts");
+/* harmony import */ var _templates_animationTemplates__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./templates/animationTemplates */ "./ts/format/templates/animationTemplates.ts");
+/* harmony import */ var _templates_rendererTemplates__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./templates/rendererTemplates */ "./ts/format/templates/rendererTemplates.ts");
+/* harmony import */ var _templates_renderStateTemplates__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./templates/renderStateTemplates */ "./ts/format/templates/renderStateTemplates.ts");
+
+
+
+
+var TEMPLATES = {
+    "1.21.11-mojmaps": {
+        name: "Fabric 1.21.11 (Mojmaps)",
+        model: _templates_modelTemplates__WEBPACK_IMPORTED_MODULE_0__.MODEL_TEMPLATE_1_21_11,
+        animation: _templates_animationTemplates__WEBPACK_IMPORTED_MODULE_1__.ANIMATION_TEMPLATE_1_21_11,
+        renderer: _templates_rendererTemplates__WEBPACK_IMPORTED_MODULE_2__.RENDERER_TEMPLATE_1_21_11,
+        renderState: _templates_renderStateTemplates__WEBPACK_IMPORTED_MODULE_3__.RENDER_STATE_TEMPLATE_1_21_11,
+    }
+};
+function createModelTemplate(file) {
+    return { file: file, type: "model" };
+}
+function createAnimationTemplate(file) {
+    return { file: file, type: "animation" };
+}
+function createRendererTemplate(file) {
+    return { file: file, type: "renderer" };
+}
+function createRenderStateTemplate(file) {
+    return { file: file, type: "renderState" };
+}
+
+
+/***/ },
+
+/***/ "./ts/format/templates/animationTemplates.ts"
+/*!***************************************************!*\
+  !*** ./ts/format/templates/animationTemplates.ts ***!
+  \***************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ANIMATION_TEMPLATE_1_21_11: () => (/* binding */ ANIMATION_TEMPLATE_1_21_11)
+/* harmony export */ });
+/* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../templates */ "./ts/format/templates.ts");
+
+var ANIMATION_TEMPLATE_1_21_11 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.createAnimationTemplate)("\n    // Made with Blockbench %(bb_version) and Mahi %(mahi_version)\n    // Exported for Minecraft version %(mc_versions)\n    // Paste this class into your mod and generate all the required imports\n    public class %(animation_class) {\n    \n    }\n");
+
+
+/***/ },
+
+/***/ "./ts/format/templates/modelTemplates.ts"
+/*!***********************************************!*\
+  !*** ./ts/format/templates/modelTemplates.ts ***!
+  \***********************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MODEL_TEMPLATE_1_21_11: () => (/* binding */ MODEL_TEMPLATE_1_21_11)
+/* harmony export */ });
+/* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../templates */ "./ts/format/templates.ts");
+
+var MODEL_TEMPLATE_1_21_11 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.createModelTemplate)("\n    // Made with Blockbench %(bb_version) and Mahi %(mahi_version)\n    // Exported for Minecraft version %(mc_versions)\n    // Paste this class into your mod and generate all the required imports\n    public class %(model_class) {\n    \n    }\n");
+
+
+/***/ },
+
+/***/ "./ts/format/templates/renderStateTemplates.ts"
+/*!*****************************************************!*\
+  !*** ./ts/format/templates/renderStateTemplates.ts ***!
+  \*****************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   RENDER_STATE_TEMPLATE_1_21_11: () => (/* binding */ RENDER_STATE_TEMPLATE_1_21_11)
+/* harmony export */ });
+/* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../templates */ "./ts/format/templates.ts");
+
+var RENDER_STATE_TEMPLATE_1_21_11 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.createRenderStateTemplate)("\n    // Made with Blockbench %(bb_version) and Mahi %(mahi_version)\n    // Exported for Minecraft version %(mc_versions)\n    // Paste this class into your mod and generate all the required imports\n    public class %(render_state_class) {\n    \n    }\n");
+
+
+/***/ },
+
+/***/ "./ts/format/templates/rendererTemplates.ts"
+/*!**************************************************!*\
+  !*** ./ts/format/templates/rendererTemplates.ts ***!
+  \**************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   RENDERER_TEMPLATE_1_21_11: () => (/* binding */ RENDERER_TEMPLATE_1_21_11)
+/* harmony export */ });
+/* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../templates */ "./ts/format/templates.ts");
+
+var RENDERER_TEMPLATE_1_21_11 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.createRendererTemplate)("\n    // Made with Blockbench %(bb_version) and Mahi %(mahi_version)\n    // Exported for Minecraft version %(mc_versions)\n    // Paste this class into your mod and generate all the required imports\n    public class %(renderer_class) {\n    \n    }\n");
+
+
+/***/ }
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Check if module exists (development only)
+/******/ 		if (__webpack_modules__[moduleId] === undefined) {
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+(() => {
 /*!*********************!*\
   !*** ./ts/index.ts ***!
   \*********************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ "./ts/constants.ts");
+/* harmony import */ var _format_mahiExportActions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./format/mahiExportActions */ "./ts/format/mahiExportActions.ts");
+
+
 (function () {
-    var button;
-    var exportAll;
-    var exportModel;
-    var exportAnimations;
-    var exportRenderer;
-    var exportRenderState;
-    BBPlugin.register("mahi", {
+    BBPlugin.register(_constants__WEBPACK_IMPORTED_MODULE_0__.ID, {
         title: "Mahi",
         icon: "icon.png",
         author: "Superkat32",
         description: "Plugin for the Mahi Minecraft Java Library",
         tags: ["Minecraft: Java Edition", "Animation", "Likely Janky"],
-        version: "0.0.1",
+        version: _constants__WEBPACK_IMPORTED_MODULE_0__.VERSION,
         min_version: "4.9.0",
         variant: "both",
         onload: function () {
-            button = new Action("gather_input", {
-                name: "Gather Input",
-                description: "Gathers an input",
-                icon: "input",
-                click: function () {
-                    var exampleEntity = getExampleEntityName();
-                    var form = {
-                        format: { type: "info", label: "data.format", text: "Mahi Model", description: "Formatted to the Mahi (Minecraft Java Library) Model format." },
-                    };
-                    form.filename = {
-                        label: "Project Filename",
-                        description: "The filename of your project.",
-                        placeholder: "".concat(exampleEntity, " Entity Project"),
-                        type: "text"
-                    };
-                    form.modid = {
-                        label: "Mod ID",
-                        description: "Your mod's mod id. Can refer to a static string variable (e.g. from your main class) if you wish. Otherwise exports as a string.",
-                        placeholder: "example_mod || ExampleMod.MOD_ID",
-                        type: "text"
-                    };
-                    form.entityName = {
-                        label: "Entity Class",
-                        description: "Your entity's class name.",
-                        placeholder: "".concat(exampleEntity),
-                        type: "text"
-                    };
-                    form.exportVersion = {
-                        label: "Export Version",
-                        description: "The Minecraft version to export your project to.",
-                        type: "select",
-                        options: {
-                            "1.21.11_mojmaps": "Fabric 1.21.11 (Mojmaps)",
-                            "26.1_mojmaps.snapshot1": "Fabric 26.1 (Snapshot 1) (Mojmaps)"
-                        }
-                    };
-                    form.texturesWhitespace = {
-                        label: "",
-                        text: "",
-                        type: "info",
-                    };
-                    form.texturesInfo = {
-                        label: "Texture Info",
-                        text: "UV Type & Texture Size",
-                        type: "info",
-                    };
-                    form.uvMode = {
-                        label: "UV Mode",
-                        description: "Your uv mode for this project.",
-                        type: "select",
-                        options: {
-                            box_uv: "Box UV Mode",
-                            face_uv: "Face UV Mode",
-                        },
-                        value: "box_uv"
-                    };
-                    form.textureSize = {
-                        label: "Texture Size",
-                        description: "Your texture size for this project.",
-                        type: "vector",
-                        dimensions: 2,
-                        linked_ratio: true,
-                        value: [16, 16],
-                        min: 1
-                    };
-                    form.extrasWhitespace = {
-                        label: "",
-                        text: "",
-                        type: "info",
-                    };
-                    form.extrasInfo = {
-                        label: "Extra Info",
-                        text: "Exported Class Names (Optional)",
-                        type: "info",
-                    };
-                    form.entityModelClassName = {
-                        label: "Model Class",
-                        description: "Your entity's model class name.",
-                        placeholder: "".concat(exampleEntity, "Model"),
-                        condition: true,
-                        type: "text"
-                    };
-                    form.entityAnimationClassName = {
-                        label: "Animation Class",
-                        description: "Your entity's animation class name.",
-                        placeholder: "".concat(exampleEntity, "Animation"),
-                        type: "text"
-                    };
-                    form.entityRendererClassName = {
-                        label: "Renderer Class",
-                        description: "Your entity's renderer class name.",
-                        placeholder: "".concat(exampleEntity, "Renderer"),
-                        type: "text"
-                    };
-                    form.entityRenderStateClassName = {
-                        label: "Render State Class",
-                        description: "Your entity's render state class name.",
-                        placeholder: "".concat(exampleEntity, "RenderState"),
-                        type: "text"
-                    };
-                    form.extendedRenderStateClassName = {
-                        label: "Render State Superclass",
-                        description: "The Render State class your entity Render State should extend.",
-                        placeholder: "LivingEntityRenderState",
-                        type: "text"
-                    };
-                    var dialog = new Dialog({
-                        id: "gather_input",
-                        title: "Gather Input",
-                        width: 500,
-                        form: form,
-                        onConfirm: function (formResult) {
-                            Blockbench.showQuickMessage(formResult.modid, 5000);
-                            dialog.hide();
-                        },
-                        onFormChange: function (formResult) {
-                            try {
-                                document.getElementById("entityModelClassName")["placeholder"] = getClassNameFromEntity(formResult.entityName, exampleEntity, "Model");
-                                document.getElementById("entityAnimationClassName")["placeholder"] = getClassNameFromEntity(formResult.entityName, exampleEntity, "Animation");
-                                document.getElementById("entityRendererClassName")["placeholder"] = getClassNameFromEntity(formResult.entityName, exampleEntity, "Renderer");
-                                document.getElementById("entityRenderStateClassName")["placeholder"] = getClassNameFromEntity(formResult.entityName, exampleEntity, "RenderState");
-                            }
-                            catch (error) { }
-                        }
-                    });
-                    dialog.show();
-                },
-            });
-            MenuBar.addAction(button, "filter");
-            exportModel = new Action("export_model", {
-                name: "Export Mahi Model",
-                icon: "view_in_ar",
-                click: function () { }
-            });
-            MenuBar.addAction(exportModel, "file.export");
-            exportAnimations = new Action("export_animations", {
-                name: "Export Mahi Animations",
-                icon: "animation",
-                click: function () { }
-            });
-            MenuBar.addAction(exportAnimations, "file.export");
-            exportRenderer = new Action("export_renderer", {
-                name: "Export Mahi Renderer",
-                icon: "videocam",
-                click: function () { }
-            });
-            MenuBar.addAction(exportRenderer, "file.export");
-            exportRenderState = new Action("export_render_state", {
-                name: "Export Mahi Render State",
-                icon: "movie_creation",
-                click: function () { }
-            });
-            MenuBar.addAction(exportRenderState, "file.export");
-            exportAll = new Action("export_all", {
-                name: "Export Full Mahi Entity",
-                icon: "fa-fish-fins",
-                click: function () { }
-            });
-            MenuBar.addAction(exportAll, "file.export");
+            (0,_format_mahiExportActions__WEBPACK_IMPORTED_MODULE_1__.loadMahiActions)();
         },
         onunload: function () {
-            button.delete();
-            exportAll.delete();
-            exportModel.delete();
-            exportAnimations.delete();
-            exportRenderer.delete();
-            exportRenderState.delete();
+            (0,_format_mahiExportActions__WEBPACK_IMPORTED_MODULE_1__.unloadMahiActions)();
         }
     });
-    function getClassNameFromEntity(entityName, fallbackName, suffix) {
-        return (entityName === "" ? fallbackName : entityName) + suffix;
-    }
-    function getExampleEntityName() {
-        var entities = ["Armadillo", "Bat", "Breeze", "Camel", "CopperGolem", "Creaking", "Frog", "Nautilus", "Sniffer", "Warden"];
-        var index = Math.floor(Math.random() * entities.length);
-        return entities[index];
-    }
+})();
+
 })();
 
 /******/ })()

@@ -3,3 +3,6 @@ export const ID: string = "mahi";
 
 // The Plugin's current version (similar to gradle.properties info).
 export const VERSION: string = "0.0.1";
+
+// The name of the Mahi Entity codec
+export const CODEC_NAME: string = "mahi_entity";
