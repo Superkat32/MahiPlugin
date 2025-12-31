@@ -1,5 +1,6 @@
 import {CODEC_NAME} from "../constants";
 import {TEMPLATES} from "./templates";
+import {openMahiProjectSettingsDialog} from "./mahiPluginProperties";
 
 export const MAHI_CODEC: Codec = new Codec(CODEC_NAME, {
     name: "Mahi Entity",
@@ -55,7 +56,13 @@ export const MAHI_FORMAT: ModelFormat = new ModelFormat(CODEC_NAME, {
     rotate_cubes: true,
     integer_size: true,
     animation_mode: true,
-    pbr: true
+    model_identifier: false,
+    pbr: true,
+    new() {
+        if (newProject(this)) {
+            return openMahiProjectSettingsDialog();
+        }
+    },
 })
 MAHI_CODEC.format = MAHI_FORMAT;
 

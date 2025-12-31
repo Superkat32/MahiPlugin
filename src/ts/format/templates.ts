@@ -22,6 +22,15 @@ export const TEMPLATES: Templates = {
     }
 }
 
+export function getTemplateOptionNames(): any {
+    let options: any = {};
+    for (let key in TEMPLATES) {
+        options[key] = TEMPLATES[key].name;
+    }
+
+    return options;
+}
+
 interface Template {
     file: string;
     type: TemplateType;

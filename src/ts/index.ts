@@ -1,5 +1,6 @@
 import {ID, VERSION} from "./constants";
-import {loadMahiActions, unloadMahiActions} from "./format/mahiExportActions";
+import {loadMahiActions, unloadMahiActions} from "./format/mahiActions";
+import {loadMahiProperties, unloadMahiProperties} from "./format/mahiPluginProperties";
 
 (function() {
     BBPlugin.register(ID, {
@@ -13,10 +14,12 @@ import {loadMahiActions, unloadMahiActions} from "./format/mahiExportActions";
         variant: "both",
 
         onload() {
+            loadMahiProperties();
             loadMahiActions();
         },
 
         onunload() {
+            unloadMahiProperties();
             unloadMahiActions();
         }
     })
