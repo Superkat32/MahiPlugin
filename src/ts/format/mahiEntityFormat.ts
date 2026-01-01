@@ -29,12 +29,14 @@ export const MAHI_CODEC: Codec = new Codec(CODEC_NAME, {
 });
 MAHI_CODEC.templates = TEMPLATES;
 
-// codec.compileAnimations = function(animations = Animation.all) {
-//
-// }
+MAHI_CODEC.compileAnimations = function(animations = Animation["all"]) {
+
+}
 
 export const MAHI_FORMAT: ModelFormat = new ModelFormat(CODEC_NAME, {
     id: CODEC_NAME,
+    name: "Mahi Entity",
+    description: "Entity model for Minecraft Java mods using the Mahi Library. Exports to '.java' class files to load directly in your Minecraft mod.",
     icon: "fa-fish-fins",
     category: "minecraft",
     target: "Minecraft: Java Edition",
@@ -43,7 +45,12 @@ export const MAHI_FORMAT: ModelFormat = new ModelFormat(CODEC_NAME, {
             {type: 'h3', text: tl('mode.start.format.informations')},
             {text: `* ${tl('format.modded_entity.info.integer_size')}
 					* ${tl('format.modded_entity.info.format')}`.replace(/\t+/g, '')
-            }
+            },
+            {type: `h3`, text: tl('mode.start.format.resources')},
+            {text: `* [Mahi Wiki](https://github.com/Superkat32/Mahi)
+					* [Mahi Modrinth](https://github.com/Superkat32/Mahi)
+					* [Mahi GitHub](https://github.com/Superkat32/Mahi)`.replace(/\t+/g, '')
+            },
         ]
     },
     codec: MAHI_CODEC,
@@ -56,7 +63,6 @@ export const MAHI_FORMAT: ModelFormat = new ModelFormat(CODEC_NAME, {
     rotate_cubes: true,
     integer_size: true,
     animation_mode: true,
-    model_identifier: false,
     pbr: true,
     new() {
         if (newProject(this)) {

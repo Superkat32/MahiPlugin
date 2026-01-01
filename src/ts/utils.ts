@@ -23,3 +23,4 @@ export const removeMonkeypatches = () => {
     });
     Monkeypatches.clear();
 }
+// End of Geckolib copy-pasted code

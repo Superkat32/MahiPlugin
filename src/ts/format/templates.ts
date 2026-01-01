@@ -22,10 +22,14 @@ export const TEMPLATES: Templates = {
     }
 }
 
-export function getTemplateOptionNames(): any {
+export function getTemplateOptionNames(whitespace: boolean = false): any {
     let options: any = {};
     for (let key in TEMPLATES) {
         options[key] = TEMPLATES[key].name;
+    }
+
+    if(whitespace) {
+        options["whitespace"] = true;
     }
 
     return options;

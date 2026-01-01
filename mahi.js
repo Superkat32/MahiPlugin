@@ -48,7 +48,6 @@ var FANCY_VANILLA_ENTITIES = [
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   loadMahiActions: () => (/* binding */ loadMahiActions),
-/* harmony export */   monkeypatchMahiProjectWindowClick: () => (/* binding */ monkeypatchMahiProjectWindowClick),
 /* harmony export */   unloadMahiActions: () => (/* binding */ unloadMahiActions)
 /* harmony export */ });
 /* harmony import */ var _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./mahiEntityFormat */ "./ts/format/mahiEntityFormat.ts");
@@ -59,20 +58,38 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var exportModel = new Action("export_model", {
+var exportMahiProject = new Action("export_mahi_project", {
+    name: "Export Mahi Entity",
+    icon: "fa-fish-fins",
+    condition: function () { return (0,_mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.isFormatMahiEntity)(); },
+    click: function () {
+        openExportProjectSettings();
+    }
+});
+var exportMahiModel = new Action("export_mahi_model", {
     name: "Export Mahi Model",
     icon: "view_in_ar",
     condition: function () { return (0,_mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.isFormatMahiEntity)(); },
     click: function () {
-        _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.export();
+        openExportProjectSettings(true, false, false, false);
+    }
+});
+var exportMahiAnimations = new Action("export_mahi_animations", {
+    name: "Export Mahi Animations",
+    icon: "animation",
+    condition: function () { return (0,_mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.isFormatMahiEntity)(); },
+    click: function () {
+        openExportProjectSettings(false, true, false, true);
     }
 });
 function loadMahiActions() {
-    MenuBar.addAction(exportModel, "file.export.0");
+    MenuBar.addAction(exportMahiModel, "file.export");
+    MenuBar.addAction(exportMahiAnimations, "file.export");
+    MenuBar.addAction(exportMahiProject, "file.export");
     (0,_utils__WEBPACK_IMPORTED_MODULE_2__.addMonkeypatch)(BarItems, "project_window", "click", monkeypatchMahiProjectWindowClick);
 }
 function unloadMahiActions() {
-    exportModel.delete();
+    exportMahiProject.delete();
     (0,_utils__WEBPACK_IMPORTED_MODULE_2__.removeMonkeypatches)();
 }
 function monkeypatchMahiProjectWindowClick() {
@@ -82,6 +99,167 @@ function monkeypatchMahiProjectWindowClick() {
     else {
         return _utils__WEBPACK_IMPORTED_MODULE_2__.Monkeypatches.get(BarItems).click();
     }
+}
+function openExportProjectSettings(exportModel, exportAnimation, exportRenderer, exportRenderState) {
+    if (exportModel === void 0) { exportModel = true; }
+    if (exportAnimation === void 0) { exportAnimation = true; }
+    if (exportRenderer === void 0) { exportRenderer = true; }
+    if (exportRenderState === void 0) { exportRenderState = true; }
+    var form = createExportInputForm(exportModel, exportAnimation, exportRenderer, exportRenderState);
+    form.select_all_none = {
+        type: "buttons",
+        buttons: ["generic.select_all", "generic.select_none", "Model Change", "Animation Change"],
+        click: function (index) {
+            switch (index) {
+                case 0: return dialog.setFormValues({
+                    export_model: true,
+                    export_animation: true,
+                    export_renderer: true,
+                    export_renderstate: true
+                });
+                case 1: return dialog.setFormValues({
+                    export_model: false,
+                    export_animation: false,
+                    export_renderer: false,
+                    export_renderstate: false
+                });
+                case 2: return dialog.setFormValues({
+                    export_model: true,
+                    export_animation: false,
+                    export_renderer: false,
+                    export_renderstate: false
+                });
+                case 3: return dialog.setFormValues({
+                    export_model: false,
+                    export_animation: true,
+                    export_renderer: false,
+                    export_renderstate: true
+                });
+            }
+        }
+    };
+    var dialog = new Dialog({
+        id: "mahi_project_export",
+        title: "Mahi Entity Export Settings",
+        form: form,
+        onConfirm: function (formResult, event) {
+            if (formResult.export_animation) {
+                openExportAnimationSettings(formResult);
+            }
+            else {
+                exportProject(formResult);
+            }
+            dialog.hide();
+        }
+    });
+    dialog.show();
+}
+function createExportInputForm(exportModelDefault, exportAnimationDefault, exportRendererDefault, exportRenderStateDefault) {
+    return {
+        export_model: {
+            label: "Export Entity Model",
+            description: "Save your Entity Model to your computer.",
+            value: exportModelDefault,
+            type: "checkbox",
+        },
+        export_animation: {
+            label: "Export Entity Animation",
+            description: "Save your Entity Animations to your computer.",
+            value: exportAnimationDefault,
+            type: "checkbox",
+        },
+        export_renderer: {
+            label: "Export Entity Renderer Template",
+            description: "Save a Entity Renderer template to your computer.",
+            value: exportRendererDefault,
+            type: "checkbox",
+        },
+        export_renderstate: {
+            label: "Export Entity Render State Template",
+            description: "Save a Entity Render State template to your computer.",
+            value: exportRenderStateDefault,
+            type: "checkbox",
+        }
+    };
+}
+function openExportAnimationSettings(exportFormResults) {
+    var form = {};
+    var keys = [];
+    var animations = Animation["all"].slice();
+    if (Format.animation_files)
+        animations.sort(function (a, b) { return a.path.hashCode() - b.path.hashCode(); });
+    animations.forEach(function (animation) {
+        var key = animation.name;
+        keys.push(key);
+        form[key.hashCode()] = {
+            label: key,
+            type: "checkbox",
+            value: true
+        };
+    });
+    form.select_all_none = {
+        type: "buttons",
+        buttons: ["generic.select_all", "generic.select_none"],
+        click: function (index) {
+            var values = {};
+            keys.forEach(function (key) { return values[key.hashCode()] = (index == 0); });
+            dialog.setFormValues(values);
+        }
+    };
+    var dialog = new Dialog({
+        id: "mahi_animation_export",
+        title: "dialog.animation_export.title",
+        form: form,
+        onConfirm: function (formResult, event) {
+            if (exportFormResults != undefined) {
+                exportProject(exportFormResults, formResult, keys);
+            }
+            dialog.hide();
+        }
+    });
+    dialog.show();
+}
+function exportProject(exportFormResults, animationFormResults, animationKeys) {
+    console.log("yay");
+    if (exportFormResults.export_model) {
+        exportModel();
+        console.log("model");
+    }
+    if (exportFormResults.export_animation && animationFormResults != undefined && animationKeys != undefined) {
+        exportAnimation(animationFormResults, animationKeys);
+        console.log("animation");
+    }
+    if (exportFormResults.export_renderer) {
+        exportRenderer();
+        console.log("renderer");
+    }
+    if (exportFormResults.export_renderstate) {
+        exportRenderState();
+        console.log("renderstate");
+    }
+}
+function exportModel() {
+    _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.export();
+}
+function exportAnimation(animationFormResult, animationKeys) {
+    console.log(animationFormResult);
+    var keys = animationKeys.filter(function (key) { return animationFormResult[key.hashCode()]; });
+    var animations = keys.map(function (k) { return Animation["all"].find(function (anim) { return anim.name == k; }); });
+    var content = _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.compileAnimations(animations);
+    console.log(animations);
+    Blockbench.export({
+        resource_id: "mahi_animations",
+        type: "Mahi Modded Entity Animations",
+        extensions: ["java"],
+        name: (Project.geometry_name || "model"),
+        content: content
+    });
+}
+function exportRenderer() {
+    _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.export();
+}
+function exportRenderState() {
+    _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.export();
 }
 
 
@@ -127,11 +305,13 @@ var MAHI_CODEC = new Codec(_constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_NAME, {
     }
 });
 MAHI_CODEC.templates = _templates__WEBPACK_IMPORTED_MODULE_1__.TEMPLATES;
-// codec.compileAnimations = function(animations = Animation.all) {
-//
-// }
+MAHI_CODEC.compileAnimations = function (animations) {
+    if (animations === void 0) { animations = Animation["all"]; }
+};
 var MAHI_FORMAT = new ModelFormat(_constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_NAME, {
     id: _constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_NAME,
+    name: "Mahi Entity",
+    description: "Entity model for Minecraft Java mods using the Mahi Library. Exports to '.java' class files to load directly in your Minecraft mod.",
     icon: "fa-fish-fins",
     category: "minecraft",
     target: "Minecraft: Java Edition",
@@ -139,7 +319,10 @@ var MAHI_FORMAT = new ModelFormat(_constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_
         content: [
             { type: 'h3', text: tl('mode.start.format.informations') },
             { text: "* ".concat(tl('format.modded_entity.info.integer_size'), "\n\t\t\t\t\t* ").concat(tl('format.modded_entity.info.format')).replace(/\t+/g, '')
-            }
+            },
+            { type: "h3", text: tl('mode.start.format.resources') },
+            { text: "* [Mahi Wiki](https://github.com/Superkat32/Mahi)\n\t\t\t\t\t* [Mahi Modrinth](https://github.com/Superkat32/Mahi)\n\t\t\t\t\t* [Mahi GitHub](https://github.com/Superkat32/Mahi)".replace(/\t+/g, '')
+            },
         ]
     },
     codec: MAHI_CODEC,
@@ -152,7 +335,6 @@ var MAHI_FORMAT = new ModelFormat(_constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_
     rotate_cubes: true,
     integer_size: true,
     animation_mode: true,
-    model_identifier: false,
     pbr: true,
     new: function () {
         if (newProject(this)) {
@@ -193,20 +375,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants */ "./ts/constants.ts");
 /* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./templates */ "./ts/format/templates.ts");
-var __assign = (undefined && undefined.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
+var __rest = (undefined && undefined.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
         }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+    return t;
 };
 
 
-// export const MOD_ID_PROPERTY: string = "mahi_modid";
 var ENTITY_CLASS_PROPERTY = "mahi_entity_class";
 var EXPORT_VERSION_PROPERTY = "mahi_export_version";
 var FLIP_Y_PROPERTY = "mahi_flip_y";
@@ -234,6 +415,9 @@ function createPluginProperties() {
             label: "Entity Class",
             description: "Your Entity Class name.",
             placeholder: "".concat(exampleEntity),
+            options: {
+                entityPlaceholder: {}
+            },
             condition: isMahiProject(),
         }),
         createMahiPluginProperty("string", EXPORT_VERSION_PROPERTY, {
@@ -247,6 +431,9 @@ function createPluginProperties() {
             label: "Flip Y Axis",
             description: "Flip the Y Axis.",
             default: true,
+            options: {
+                whitespace: true
+            },
             condition: isMahiProject(),
         }),
         createMahiPluginProperty("string", MODEL_CLASS_PROPERTY, {
@@ -254,14 +441,71 @@ function createPluginProperties() {
             description: "Your Entity's Model Class name.",
             placeholder: getEntityModelName("", exampleEntity),
             options: {
-                "class_export": true,
-                "whitespace": true
+                whitespace: true,
+                info: {
+                    label: "Class Exports",
+                    text: "Exported Class Names (Optional)"
+                },
+                entityPlaceholder: {
+                    suffix: "Model"
+                }
             },
             condition: isMahiProject(),
-        })
+        }),
+        createMahiPluginProperty("string", ANIMATION_CLASS_PROPERTY, {
+            label: "Animation Class",
+            description: "Your Entity's Animation Class name.",
+            placeholder: getEntityAnimationName("", exampleEntity),
+            options: {
+                entityPlaceholder: {
+                    suffix: "Animation"
+                }
+            },
+            condition: isMahiProject(),
+        }),
+        createMahiPluginProperty("string", RENDERER_CLASS_PROPERTY, {
+            label: "Renderer Class",
+            description: "Your Entity's Renderer Class name.",
+            placeholder: getEntityRendererName("", exampleEntity),
+            options: {
+                entityPlaceholder: {
+                    suffix: "Renderer"
+                }
+            },
+            condition: isMahiProject(),
+        }),
+        createMahiPluginProperty("string", RENDER_STATE_CLASS_PROPERTY, {
+            label: "Render State Class",
+            description: "Your Entity's Render State Class name.",
+            placeholder: getEntityRenderStateName("", exampleEntity),
+            options: {
+                entityPlaceholder: {
+                    suffix: "RenderState"
+                }
+            },
+            condition: isMahiProject(),
+        }),
+        createMahiPluginProperty("string", MODEL_SUPERCLASS_PROPERTY, {
+            label: "Model Superclass",
+            description: "Your Entity Model's Superclass(extends) name.",
+            placeholder: "EntityModel",
+            condition: isMahiProject(),
+        }),
+        createMahiPluginProperty("string", RENDERER_SUPERCLASS_PROPERTY, {
+            label: "Renderer Superclass",
+            description: "Your Entity Renderer's Superclass(extends) name.",
+            placeholder: "MobRenderer",
+            condition: isMahiProject(),
+        }),
+        createMahiPluginProperty("string", RENDER_STATE_SUPERCLASS_PROPERTY, {
+            label: "RenderState Superclass",
+            description: "Your Entity Render State's Superclass(extends) name.",
+            placeholder: "LivingEntityRenderState",
+            condition: isMahiProject(),
+        }),
     ];
 }
-function createMahiFormConfig() {
+function createMahiFormConfig(exampleEntity) {
     var form = {
         format: {
             label: "data.format",
@@ -274,7 +518,7 @@ function createMahiFormConfig() {
         var property = ModelProject.properties[key];
         if (property.exposed === false || !Condition(property.condition))
             continue;
-        var entry = form[property.name] = {
+        var entry = {
             label: property.label,
             description: property.description,
             value: Project[property.name],
@@ -283,7 +527,7 @@ function createMahiFormConfig() {
         };
         if (property.name === "name") { // Replace name label & description
             entry.label = "Project File Name";
-            entry.placeholder = property.placeholder;
+            entry.placeholder = "".concat(exampleEntity, "Project");
             entry.description = "The file name of your Blockbench project.";
         }
         else if (property.name === "model_identifier") { // Replace model id label (used as mod id in export)
@@ -291,7 +535,42 @@ function createMahiFormConfig() {
             entry.placeholder = "example_mod || ExampleMod.MOD_ID";
             entry.description = "Your mod's mod id. Can reference a static string (e.g. in your main class), otherwise will be exported as a string.";
         }
-        else if (property.name === FLIP_Y_PROPERTY) { // Add texture size after Flip Y Axis
+        if (property.type == "boolean")
+            entry.type = "checkbox";
+        if (property.type == "string")
+            entry.type = "text";
+        if (property["options"]) {
+            var entryOptions = property["options"];
+            if (entryOptions["whitespace"]) { // apply whitespace before value
+                form["".concat(property.name, "_whitespace")] = { label: "", text: "", type: "info" }; // whitespace value
+            }
+            if (entryOptions["info"]) {
+                var infoOptions = entryOptions["info"];
+                form["".concat(property.name, "_info")] = {
+                    label: infoOptions["label"],
+                    text: infoOptions["text"],
+                    type: "info"
+                };
+            }
+            if (entryOptions["entityPlaceholder"]) {
+                var entityPlaceholderOptions = entryOptions["entityPlaceholder"];
+                var prefix = entityPlaceholderOptions["prefix"] ? entityPlaceholderOptions["prefix"] : "";
+                var suffix = entityPlaceholderOptions["suffix"] ? entityPlaceholderOptions["suffix"] : "";
+                entry.placeholder = "".concat(prefix).concat(exampleEntity).concat(suffix);
+            }
+            // exclude whitespace and custom_class keys in export version dropdown (I don't know why this works LOL)
+            var whitespace = entryOptions.whitespace, info = entryOptions.info, entityPlaceholder = entryOptions.entityPlaceholder, selectableOptions = __rest(entryOptions, ["whitespace", "info", "entityPlaceholder"]);
+            if (Object.keys(selectableOptions).length > 0) {
+                // @ts-ignore
+                entry["options"] = selectableOptions;
+                entry.type = "select";
+            }
+        }
+        if (form.name && (Project.save_path || Project.export_path || Format.image_editor) && !Format.legacy_editable_file_name) {
+            delete form.name;
+        }
+        form[property.name] = entry; // Set the entry in the form
+        if (property.name === FLIP_Y_PROPERTY) { // Add texture size after Flip Y Axis
             form.texture_size = {
                 label: "dialog.project.texture_size",
                 description: "The model's texture size.",
@@ -301,57 +580,37 @@ function createMahiFormConfig() {
                 value: [Project.texture_width, Project.texture_height],
                 min: 1
             };
-            form["".concat(property.name, "_whitespace")] = { label: "", text: "", type: "info" }; // whitespace
-        }
-        else if (property.name === EXPORT_VERSION_PROPERTY) { // Add whitespace after Export Version
-            form["".concat(property.name, "_whitespace")] = { label: "", text: "", type: "info" };
-        }
-        if (property.type == "boolean")
-            entry.type = "checkbox";
-        if (property.type == "string")
-            entry.type = "text";
-        if (property["options"]) {
-            var entryOptions = property["options"];
-            if (entryOptions["whitespace"]) {
-                form["".concat(property.name, "_whitespace")] = { label: "", text: "", type: "info" }; // whitespace
-                var clone = __assign({}, entryOptions);
-                delete clone["whitespace"];
-                entryOptions = clone;
-            }
-            delete entryOptions["class_export"];
-            delete entryOptions["superclass_export"];
-            if (Object.keys(entryOptions).length > 0) {
-                // @ts-ignore
-                entry["options"] = entryOptions;
-                entry.type = "select";
-            }
-        }
-        if (form.name && (Project.save_path || Project.export_path || Format.image_editor) && !Format.legacy_editable_file_name) {
-            delete form.name;
         }
     }
-    form.custom_settings = {
-        label: "Custom Class Names",
-        description: "Settings for custom exported class & superclass names.",
-        options: {
-            // default: "None",
-            class: "Classes",
-            superclass: "Superclasses"
-        },
-        type: "inline_multi_select"
-    };
     return form;
 }
 function openMahiProjectSettingsDialog() {
     if (Project instanceof ModelProject) {
-        var form = createMahiFormConfig();
+        var exampleEntity_1 = getExampleEntityName();
+        var form = createMahiFormConfig(exampleEntity_1);
         var dialog_1 = new Dialog({
             id: "mahi_project_settings",
             title: "Mahi Project Settings",
             width: 500,
+            part_order: ["form", "component"],
             form: form,
+            onFormChange: function (formResult) {
+                try {
+                    // Update the dynamic options based on the input Entity Class
+                    var inputEntityName = formResult[ENTITY_CLASS_PROPERTY];
+                    // @ts-expect-error
+                    document.getElementById(MODEL_CLASS_PROPERTY)["placeholder"] = getEntityModelName(inputEntityName, exampleEntity_1);
+                    // @ts-expect-error
+                    document.getElementById(ANIMATION_CLASS_PROPERTY)["placeholder"] = getEntityAnimationName(inputEntityName, exampleEntity_1);
+                    // @ts-expect-error
+                    document.getElementById(RENDERER_CLASS_PROPERTY)["placeholder"] = getEntityRendererName(inputEntityName, exampleEntity_1);
+                    // @ts-expect-error
+                    document.getElementById(RENDER_STATE_CLASS_PROPERTY)["placeholder"] = getEntityRenderStateName(inputEntityName, exampleEntity_1);
+                }
+                catch (error) { }
+            },
             onConfirm: function (formResult, event) {
-                Blockbench.showQuickMessage(formResult.filename, 5000);
+                Blockbench.showQuickMessage(JSON.stringify(formResult[MODEL_CLASS_PROPERTY]), 5000);
                 dialog_1.hide();
             }
         });
@@ -428,10 +687,14 @@ var TEMPLATES = {
         renderState: _templates_renderStateTemplates__WEBPACK_IMPORTED_MODULE_3__.RENDER_STATE_TEMPLATE_26_1_SNAPSHOT_1
     }
 };
-function getTemplateOptionNames() {
+function getTemplateOptionNames(whitespace) {
+    if (whitespace === void 0) { whitespace = false; }
     var options = {};
     for (var key in TEMPLATES) {
         options[key] = TEMPLATES[key].name;
+    }
+    if (whitespace) {
+        options["whitespace"] = true;
     }
     return options;
 }
@@ -559,6 +822,7 @@ var removeMonkeypatches = function () {
     });
     Monkeypatches.clear();
 };
+// End of Geckolib copy-pasted code
 
 
 /***/ }
