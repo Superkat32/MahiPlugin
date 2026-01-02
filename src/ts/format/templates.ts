@@ -5,6 +5,13 @@ import {RENDER_STATE_TEMPLATE_1_21_11, RENDER_STATE_TEMPLATE_26_1_SNAPSHOT_1} fr
 
 type TemplateType = "model" | "animation" | "renderer" | "renderState";
 
+export const CLASS_COMMENT_INFO: string =
+    `/**
+    * Made with Blockbench %(bb_version) and Mahi %(mahi_version).
+    * Exported for Minecraft %(mc_version) or later.
+    * @author %(author)
+    */`
+
 export const TEMPLATES: Templates = {
     "1.21.11-mojmaps": {
         name: "Fabric 1.21.11 (Mojmaps)",
@@ -40,12 +47,12 @@ interface Template {
     type: TemplateType;
 }
 
-interface TemplateSet {
+export interface TemplateSet {
     name: string;
-    model: Template;
-    animation: Template;
-    renderer: Template;
-    renderState: Template;
+    model: any;
+    animation: any;
+    renderer: any;
+    renderState: any;
 }
 
 interface Templates {

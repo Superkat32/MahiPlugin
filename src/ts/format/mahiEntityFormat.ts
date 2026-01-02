@@ -1,6 +1,6 @@
 import {CODEC_NAME} from "../constants";
-import {TEMPLATES} from "./templates";
-import {openMahiProjectSettingsDialog} from "./mahiPluginProperties";
+import {TEMPLATES, TemplateSet} from "./templates";
+import {EXPORT_VERSION_PROPERTY, openMahiProjectSettingsDialog} from "./mahiPluginProperties";
 
 export const MAHI_CODEC: Codec = new Codec(CODEC_NAME, {
     name: "Mahi Entity",
@@ -30,7 +30,9 @@ export const MAHI_CODEC: Codec = new Codec(CODEC_NAME, {
 MAHI_CODEC.templates = TEMPLATES;
 
 MAHI_CODEC.compileAnimations = function(animations = Animation["all"]) {
-
+    let exportVersion: string = Project[EXPORT_VERSION_PROPERTY];
+    let templateSet: TemplateSet = TEMPLATES[exportVersion];
+    console.log(templateSet);
 }
 
 export const MAHI_FORMAT: ModelFormat = new ModelFormat(CODEC_NAME, {

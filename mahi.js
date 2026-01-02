@@ -22,7 +22,7 @@ var VERSION = "0.0.1";
 // The name of the Mahi Entity codec
 var CODEC_NAME = "mahi_entity";
 // List of fancy entities which use keyframed animations as of 1.21.11
-// These are used for the examples/placeholders of settings
+// These are used for the examples/placeholders of settings (has caused a surprising amount of headaches to implement)
 var FANCY_VANILLA_ENTITIES = [
     "Armadillo",
     "Bat",
@@ -89,6 +89,8 @@ function loadMahiActions() {
     (0,_utils__WEBPACK_IMPORTED_MODULE_2__.addMonkeypatch)(BarItems, "project_window", "click", monkeypatchMahiProjectWindowClick);
 }
 function unloadMahiActions() {
+    exportMahiModel.delete();
+    exportMahiAnimations.delete();
     exportMahiProject.delete();
     (0,_utils__WEBPACK_IMPORTED_MODULE_2__.removeMonkeypatches)();
 }
@@ -220,33 +222,25 @@ function openExportAnimationSettings(exportFormResults) {
     dialog.show();
 }
 function exportProject(exportFormResults, animationFormResults, animationKeys) {
-    console.log("yay");
     if (exportFormResults.export_model) {
         exportModel();
-        console.log("model");
     }
     if (exportFormResults.export_animation && animationFormResults != undefined && animationKeys != undefined) {
         exportAnimation(animationFormResults, animationKeys);
-        console.log("animation");
     }
     if (exportFormResults.export_renderer) {
         exportRenderer();
-        console.log("renderer");
     }
     if (exportFormResults.export_renderstate) {
         exportRenderState();
-        console.log("renderstate");
     }
 }
 function exportModel() {
-    _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.export();
 }
 function exportAnimation(animationFormResult, animationKeys) {
-    console.log(animationFormResult);
     var keys = animationKeys.filter(function (key) { return animationFormResult[key.hashCode()]; });
     var animations = keys.map(function (k) { return Animation["all"].find(function (anim) { return anim.name == k; }); });
     var content = _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.compileAnimations(animations);
-    console.log(animations);
     Blockbench.export({
         resource_id: "mahi_animations",
         type: "Mahi Modded Entity Animations",
@@ -256,10 +250,8 @@ function exportAnimation(animationFormResult, animationKeys) {
     });
 }
 function exportRenderer() {
-    _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.export();
 }
 function exportRenderState() {
-    _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.export();
 }
 
 
@@ -307,6 +299,9 @@ var MAHI_CODEC = new Codec(_constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_NAME, {
 MAHI_CODEC.templates = _templates__WEBPACK_IMPORTED_MODULE_1__.TEMPLATES;
 MAHI_CODEC.compileAnimations = function (animations) {
     if (animations === void 0) { animations = Animation["all"]; }
+    var exportVersion = Project[_mahiPluginProperties__WEBPACK_IMPORTED_MODULE_2__.EXPORT_VERSION_PROPERTY];
+    var templateSet = _templates__WEBPACK_IMPORTED_MODULE_1__.TEMPLATES[exportVersion];
+    console.log(templateSet);
 };
 var MAHI_FORMAT = new ModelFormat(_constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_NAME, {
     id: _constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_NAME,
@@ -409,14 +404,16 @@ function unloadMahiProperties() {
     }
 }
 function createPluginProperties() {
-    var exampleEntity = getExampleEntityName();
+    var exampleEntity = generateExampleEntityName();
     return [
         createMahiPluginProperty("string", ENTITY_CLASS_PROPERTY, {
             label: "Entity Class",
             description: "Your Entity Class name.",
             placeholder: "".concat(exampleEntity),
             options: {
-                entityPlaceholder: {}
+                entityPlaceholder: {
+                    exampleOnly: true
+                }
             },
             condition: isMahiProject(),
         }),
@@ -439,7 +436,7 @@ function createPluginProperties() {
         createMahiPluginProperty("string", MODEL_CLASS_PROPERTY, {
             label: "Model Class",
             description: "Your Entity's Model Class name.",
-            placeholder: getEntityModelName("", exampleEntity),
+            placeholder: getEntityModelName(exampleEntity),
             options: {
                 whitespace: true,
                 info: {
@@ -455,7 +452,7 @@ function createPluginProperties() {
         createMahiPluginProperty("string", ANIMATION_CLASS_PROPERTY, {
             label: "Animation Class",
             description: "Your Entity's Animation Class name.",
-            placeholder: getEntityAnimationName("", exampleEntity),
+            placeholder: getEntityAnimationName(exampleEntity),
             options: {
                 entityPlaceholder: {
                     suffix: "Animation"
@@ -466,7 +463,7 @@ function createPluginProperties() {
         createMahiPluginProperty("string", RENDERER_CLASS_PROPERTY, {
             label: "Renderer Class",
             description: "Your Entity's Renderer Class name.",
-            placeholder: getEntityRendererName("", exampleEntity),
+            placeholder: getEntityRendererName(exampleEntity),
             options: {
                 entityPlaceholder: {
                     suffix: "Renderer"
@@ -477,7 +474,7 @@ function createPluginProperties() {
         createMahiPluginProperty("string", RENDER_STATE_CLASS_PROPERTY, {
             label: "Render State Class",
             description: "Your Entity's Render State Class name.",
-            placeholder: getEntityRenderStateName("", exampleEntity),
+            placeholder: getEntityRenderStateName(exampleEntity),
             options: {
                 entityPlaceholder: {
                     suffix: "RenderState"
@@ -505,7 +502,7 @@ function createPluginProperties() {
         }),
     ];
 }
-function createMahiFormConfig(exampleEntity) {
+function createMahiFormConfig(exampleEntity, placeholderEntity) {
     var form = {
         format: {
             label: "data.format",
@@ -556,7 +553,8 @@ function createMahiFormConfig(exampleEntity) {
                 var entityPlaceholderOptions = entryOptions["entityPlaceholder"];
                 var prefix = entityPlaceholderOptions["prefix"] ? entityPlaceholderOptions["prefix"] : "";
                 var suffix = entityPlaceholderOptions["suffix"] ? entityPlaceholderOptions["suffix"] : "";
-                entry.placeholder = "".concat(prefix).concat(exampleEntity).concat(suffix);
+                var usedEntity = entityPlaceholderOptions["exampleOnly"] ? exampleEntity : placeholderEntity;
+                entry.placeholder = "".concat(prefix).concat(usedEntity).concat(suffix);
             }
             // exclude whitespace and custom_class keys in export version dropdown (I don't know why this works LOL)
             var whitespace = entryOptions.whitespace, info = entryOptions.info, entityPlaceholder = entryOptions.entityPlaceholder, selectableOptions = __rest(entryOptions, ["whitespace", "info", "entityPlaceholder"]);
@@ -586,8 +584,11 @@ function createMahiFormConfig(exampleEntity) {
 }
 function openMahiProjectSettingsDialog() {
     if (Project instanceof ModelProject) {
-        var exampleEntity_1 = getExampleEntityName();
-        var form = createMahiFormConfig(exampleEntity_1);
+        var exampleEntity_1 = generateExampleEntityName();
+        var placeholderEntity = exampleEntity_1;
+        if (Project[ENTITY_CLASS_PROPERTY] != "")
+            placeholderEntity = Project[ENTITY_CLASS_PROPERTY];
+        var form = createMahiFormConfig(exampleEntity_1, placeholderEntity);
         var dialog_1 = new Dialog({
             id: "mahi_project_settings",
             title: "Mahi Project Settings",
@@ -597,20 +598,70 @@ function openMahiProjectSettingsDialog() {
             onFormChange: function (formResult) {
                 try {
                     // Update the dynamic options based on the input Entity Class
-                    var inputEntityName = formResult[ENTITY_CLASS_PROPERTY];
-                    // @ts-expect-error
-                    document.getElementById(MODEL_CLASS_PROPERTY)["placeholder"] = getEntityModelName(inputEntityName, exampleEntity_1);
-                    // @ts-expect-error
-                    document.getElementById(ANIMATION_CLASS_PROPERTY)["placeholder"] = getEntityAnimationName(inputEntityName, exampleEntity_1);
-                    // @ts-expect-error
-                    document.getElementById(RENDERER_CLASS_PROPERTY)["placeholder"] = getEntityRendererName(inputEntityName, exampleEntity_1);
-                    // @ts-expect-error
-                    document.getElementById(RENDER_STATE_CLASS_PROPERTY)["placeholder"] = getEntityRenderStateName(inputEntityName, exampleEntity_1);
+                    var inputEntityName = formResult[ENTITY_CLASS_PROPERTY] != "" ? formResult[ENTITY_CLASS_PROPERTY] : exampleEntity_1;
+                    // @ts-ignore
+                    document.getElementById(MODEL_CLASS_PROPERTY)["placeholder"] = getEntityModelName(inputEntityName);
+                    // @ts-ignore
+                    document.getElementById(ANIMATION_CLASS_PROPERTY)["placeholder"] = getEntityAnimationName(inputEntityName);
+                    // @ts-ignore
+                    document.getElementById(RENDERER_CLASS_PROPERTY)["placeholder"] = getEntityRendererName(inputEntityName);
+                    // @ts-ignore
+                    document.getElementById(RENDER_STATE_CLASS_PROPERTY)["placeholder"] = getEntityRenderStateName(inputEntityName);
                 }
                 catch (error) { }
             },
             onConfirm: function (formResult, event) {
-                Blockbench.showQuickMessage(JSON.stringify(formResult[MODEL_CLASS_PROPERTY]), 5000);
+                var save;
+                var was_changed = false;
+                var box_uv = formResult.uv_mode == "box_uv";
+                var texture_width = Math.clamp(formResult.texture_size[0], 1, Infinity);
+                var texture_height = Math.clamp(formResult.texture_size[1], 1, Infinity);
+                if (Project.box_uv != box_uv
+                    || Project.texture_width != texture_width
+                    || Project.texture_height != texture_height) {
+                    was_changed = true;
+                    if (Project.box_uv != box_uv
+                        && ((box_uv && !Cube.all.find(function (cube) { return cube.box_uv; }))
+                            || !(box_uv && !Cube.all.find(function (cube) { return !cube.box_uv; })))) {
+                        // @ts-ignore
+                        if (!save)
+                            save = Undo.initEdit({ elements: Cube.all, uv_only: true, uv_mode: true });
+                        Cube.all.forEach(function (cube) { cube.setUVMode(box_uv); });
+                        if (!save)
+                            save = Undo.initEdit({ uv_mode: true });
+                        Project.texture_width = texture_width;
+                        Project.texture_height = texture_height;
+                        if (Format.optional_box_uv)
+                            Project.box_uv = box_uv;
+                        Canvas.updateAllUVs();
+                        updateSelection();
+                    }
+                }
+                for (var key in ModelProject.properties) {
+                    if (formResult[key] != undefined && Project[key] != formResult[key] && typeof Project[key] != "object") {
+                        was_changed = true;
+                    }
+                    ModelProject.properties[key].merge(Project, formResult);
+                }
+                Project.name = Project.name.trim();
+                Project.model_identifier = Project.model_identifier.trim();
+                if (save)
+                    Undo.finishEdit("Change project UV settings");
+                if (was_changed)
+                    Project.saved = false;
+                Blockbench.dispatchEvent("update_project_settings", formResult);
+                BARS.updateConditions();
+                if (Project.EditSession) {
+                    var metadata = {
+                        texture_width: Project.texture_width,
+                        texture_height: Project.texture_height,
+                        box_uv: Project.box_uv
+                    };
+                    for (var key in ModelProject.properties) {
+                        ModelProject.properties[key].copy(Project, metadata);
+                    }
+                    Project.EditSession.sendAll("change_project_meta", JSON.stringify(metadata));
+                }
                 dialog_1.hide();
             }
         });
@@ -619,24 +670,25 @@ function openMahiProjectSettingsDialog() {
     return true;
 }
 // Util methods
-function getExampleEntityName() {
+function generateExampleEntityName() {
     var index = Math.floor(Math.random() * _constants__WEBPACK_IMPORTED_MODULE_0__.FANCY_VANILLA_ENTITIES.length);
     return _constants__WEBPACK_IMPORTED_MODULE_0__.FANCY_VANILLA_ENTITIES[index];
 }
-function getEntityModelName(entityName, fallbackName) {
-    return getClassNameFromEntity(entityName, fallbackName, "Model");
+function getEntityModelName(entityName) {
+    return getClassNameFromEntity(entityName, "Model");
 }
-function getEntityAnimationName(entityName, fallbackName) {
-    return getClassNameFromEntity(entityName, fallbackName, "Animation");
+function getEntityAnimationName(entityName) {
+    return getClassNameFromEntity(entityName, "Animation");
 }
-function getEntityRendererName(entityName, fallbackName) {
-    return getClassNameFromEntity(entityName, fallbackName, "Renderer");
+function getEntityRendererName(entityName) {
+    return getClassNameFromEntity(entityName, "Renderer");
 }
-function getEntityRenderStateName(entityName, fallbackName) {
-    return getClassNameFromEntity(entityName, fallbackName, "RenderState");
+function getEntityRenderStateName(entityName) {
+    return getClassNameFromEntity(entityName, "RenderState");
 }
-function getClassNameFromEntity(entityName, fallbackName, suffix) {
-    return (entityName === "" ? fallbackName : entityName) + suffix;
+function getClassNameFromEntity(entityName, suffix) {
+    // if(entityName != "") entityName = Project[ENTITY_CLASS_PROPERTY];
+    return entityName + suffix;
 }
 function createMahiPluginProperty(type, id, options) {
     return new Property(ModelProject, type, id, options);
@@ -656,6 +708,7 @@ function isMahiProject() {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CLASS_COMMENT_INFO: () => (/* binding */ CLASS_COMMENT_INFO),
 /* harmony export */   TEMPLATES: () => (/* binding */ TEMPLATES),
 /* harmony export */   createAnimationTemplate: () => (/* binding */ createAnimationTemplate),
 /* harmony export */   createModelTemplate: () => (/* binding */ createModelTemplate),
@@ -671,6 +724,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+var CLASS_COMMENT_INFO = "/**\n    * Made with Blockbench %(bb_version) and Mahi %(mahi_version).\n    * Exported for Minecraft %(mc_version) or later.\n    * @author %(author)\n    */";
 var TEMPLATES = {
     "1.21.11-mojmaps": {
         name: "Fabric 1.21.11 (Mojmaps)",
@@ -725,10 +779,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ANIMATION_TEMPLATE_1_21_11: () => (/* binding */ ANIMATION_TEMPLATE_1_21_11),
 /* harmony export */   ANIMATION_TEMPLATE_26_1_SNAPSHOT_1: () => (/* binding */ ANIMATION_TEMPLATE_26_1_SNAPSHOT_1)
 /* harmony export */ });
-/* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../templates */ "./ts/format/templates.ts");
-
-var ANIMATION_TEMPLATE_1_21_11 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.createAnimationTemplate)("\n    // Made with Blockbench %(bb_version) and Mahi %(mahi_version)\n    // Exported for Minecraft version %(mc_versions)\n    // Paste this class into your mod and generate all the required imports\n    public class %(animation_class) {\n    \n    }\n");
-var ANIMATION_TEMPLATE_26_1_SNAPSHOT_1 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.createAnimationTemplate)("\n    // Made with Blockbench %(bb_version) and Mahi %(mahi_version)\n    // Exported for Minecraft version %(mc_versions)\n    // Paste this class into your mod and generate all the required imports\n    public class %(animation_class) {\n    \n    }\n");
+var __assign = (undefined && undefined.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+// export const ANIMATION_TEMPLATE_1_21_11 = createAnimationTemplate(`
+//     // Made with Blockbench %(bb_version) and Mahi %(mahi_version)
+//     // Exported for Minecraft version %(mc_versions)
+//     // Paste this class into your mod and generate all the required imports
+//     public class %(animation_class) {
+//
+//     }
+// `);
+//
+// export const ANIMATION_TEMPLATE_26_1_SNAPSHOT_1 = createAnimationTemplate(`
+//     // Made with Blockbench %(bb_version) and Mahi %(mahi_version)
+//     // Exported for Minecraft version %(mc_versions)
+//     // Paste this class into your mod and generate all the required imports
+//     public class %(animation_class) {
+//
+//     }
+// `);
+var ANIMATION_TEMPLATE_1_21_11 = {
+    file: "\n    %(comment_info)\n    public class %(animation_class) {\n        %(animations)\n    }",
+    animation: "public static final AnimationDefinition %(name) = AnimationDefinition.Builder.withLength(%(length))%(looping)%(channels).build();",
+    looping: ".looping()"
+};
+var ANIMATION_TEMPLATE_26_1_SNAPSHOT_1 = __assign(__assign({}, ANIMATION_TEMPLATE_1_21_11), { looping: ".loop()" });
 
 
 /***/ },

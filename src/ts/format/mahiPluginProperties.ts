@@ -28,7 +28,7 @@ export function unloadMahiProperties() {
 }
 
 function createPluginProperties(): Property<any>[] {
-    const exampleEntity: string = getExampleEntityName();
+    const exampleEntity: string = generateExampleEntityName();
 
     return [
         createMahiPluginProperty("string", ENTITY_CLASS_PROPERTY, {
@@ -36,7 +36,9 @@ function createPluginProperties(): Property<any>[] {
             description: "Your Entity Class name.",
             placeholder: `${exampleEntity}`,
             options: {
-                entityPlaceholder: {}
+                entityPlaceholder: {
+                    exampleOnly: true
+                }
             },
             condition: isMahiProject(),
         }),
@@ -64,7 +66,7 @@ function createPluginProperties(): Property<any>[] {
         createMahiPluginProperty("string", MODEL_CLASS_PROPERTY, {
             label: "Model Class",
             description: "Your Entity's Model Class name.",
-            placeholder: getEntityModelName("", exampleEntity),
+            placeholder: getEntityModelName(exampleEntity),
             options: {
                 whitespace: true,
                 info: {
@@ -81,7 +83,7 @@ function createPluginProperties(): Property<any>[] {
         createMahiPluginProperty("string", ANIMATION_CLASS_PROPERTY, {
             label: "Animation Class",
             description: "Your Entity's Animation Class name.",
-            placeholder: getEntityAnimationName("", exampleEntity),
+            placeholder: getEntityAnimationName(exampleEntity),
             options: {
                 entityPlaceholder: {
                     suffix: "Animation"
@@ -93,7 +95,7 @@ function createPluginProperties(): Property<any>[] {
         createMahiPluginProperty("string", RENDERER_CLASS_PROPERTY, {
             label: "Renderer Class",
             description: "Your Entity's Renderer Class name.",
-            placeholder: getEntityRendererName("", exampleEntity),
+            placeholder: getEntityRendererName(exampleEntity),
             options: {
                 entityPlaceholder: {
                     suffix: "Renderer"
@@ -105,7 +107,7 @@ function createPluginProperties(): Property<any>[] {
         createMahiPluginProperty("string", RENDER_STATE_CLASS_PROPERTY, {
             label: "Render State Class",
             description: "Your Entity's Render State Class name.",
-            placeholder: getEntityRenderStateName("", exampleEntity),
+            placeholder: getEntityRenderStateName(exampleEntity),
             options: {
                 entityPlaceholder: {
                     suffix: "RenderState"
@@ -139,7 +141,7 @@ function createPluginProperties(): Property<any>[] {
     ]
 }
 
-export function createMahiFormConfig(exampleEntity: string): InputFormConfig {
+export function createMahiFormConfig(exampleEntity: string, placeholderEntity: string): InputFormConfig {
     const form: InputFormConfig = {
         format: {
             label: "data.format",
@@ -193,7 +195,8 @@ export function createMahiFormConfig(exampleEntity: string): InputFormConfig {
                 let entityPlaceholderOptions: any = entryOptions["entityPlaceholder"];
                 let prefix = entityPlaceholderOptions["prefix"] ? entityPlaceholderOptions["prefix"] : "";
                 let suffix = entityPlaceholderOptions["suffix"] ? entityPlaceholderOptions["suffix"] : "";
-                entry.placeholder = `${prefix}${exampleEntity}${suffix}`;
+                let usedEntity: string = entityPlaceholderOptions["exampleOnly"] ? exampleEntity : placeholderEntity;
+                entry.placeholder = `${prefix}${usedEntity}${suffix}`;
             }
 
             // exclude whitespace and custom_class keys in export version dropdown (I don't know why this works LOL)
@@ -228,8 +231,11 @@ export function createMahiFormConfig(exampleEntity: string): InputFormConfig {
 
 export function openMahiProjectSettingsDialog() {
     if (Project instanceof ModelProject) {
-        const exampleEntity = getExampleEntityName();
-        const form = createMahiFormConfig(exampleEntity);
+        let exampleEntity: string = generateExampleEntityName();
+        let placeholderEntity: string = exampleEntity;
+        if(Project[ENTITY_CLASS_PROPERTY] != "") placeholderEntity = Project[ENTITY_CLASS_PROPERTY];
+
+        const form = createMahiFormConfig(exampleEntity, placeholderEntity);
 
         const dialog = new Dialog({
             id: "mahi_project_settings",
@@ -240,21 +246,76 @@ export function openMahiProjectSettingsDialog() {
             onFormChange(formResult: { [p: string]: FormResultValue }) {
                 try {
                     // Update the dynamic options based on the input Entity Class
-                    const inputEntityName = formResult[ENTITY_CLASS_PROPERTY];
+                    let inputEntityName = formResult[ENTITY_CLASS_PROPERTY] != "" ? formResult[ENTITY_CLASS_PROPERTY] : exampleEntity;
 
-                    // @ts-expect-error
-                    document.getElementById(MODEL_CLASS_PROPERTY)["placeholder"] = getEntityModelName(inputEntityName, exampleEntity);
-                    // @ts-expect-error
-                    document.getElementById(ANIMATION_CLASS_PROPERTY)["placeholder"] = getEntityAnimationName(inputEntityName, exampleEntity);
-                    // @ts-expect-error
-                    document.getElementById(RENDERER_CLASS_PROPERTY)["placeholder"] = getEntityRendererName(inputEntityName, exampleEntity);
-                    // @ts-expect-error
-                    document.getElementById(RENDER_STATE_CLASS_PROPERTY)["placeholder"] = getEntityRenderStateName(inputEntityName, exampleEntity);
+                    // @ts-ignore
+                    document.getElementById(MODEL_CLASS_PROPERTY)["placeholder"] = getEntityModelName(inputEntityName);
+                    // @ts-ignore
+                    document.getElementById(ANIMATION_CLASS_PROPERTY)["placeholder"] = getEntityAnimationName(inputEntityName);
+                    // @ts-ignore
+                    document.getElementById(RENDERER_CLASS_PROPERTY)["placeholder"] = getEntityRendererName(inputEntityName);
+                    // @ts-ignore
+                    document.getElementById(RENDER_STATE_CLASS_PROPERTY)["placeholder"] = getEntityRenderStateName(inputEntityName);
 
                 } catch (error) {}
             },
             onConfirm(formResult: any, event: Event): void | boolean {
-                Blockbench.showQuickMessage(JSON.stringify(formResult[MODEL_CLASS_PROPERTY]), 5000);
+                let save: any;
+                let was_changed: boolean = false;
+                let box_uv: boolean = formResult.uv_mode == "box_uv";
+                let texture_width: number = Math.clamp(formResult.texture_size[0], 1, Infinity);
+                let texture_height: number = Math.clamp(formResult.texture_size[1], 1, Infinity);
+
+                if(Project.box_uv != box_uv
+                    || Project.texture_width != texture_width
+                    || Project.texture_height != texture_height) {
+                    was_changed = true;
+
+                    if(Project.box_uv != box_uv
+                        && ((box_uv && !Cube.all.find(cube => cube.box_uv))
+                        || !(box_uv && !Cube.all.find(cube => !cube.box_uv)))
+                    ) {
+                        // @ts-ignore
+                        if (!save) save = Undo.initEdit({elements: Cube.all, uv_only: true, uv_mode: true})
+                        Cube.all.forEach(cube => {cube.setUVMode(box_uv)});
+
+                        if(!save) save = Undo.initEdit({uv_mode: true});
+                        Project.texture_width = texture_width;
+                        Project.texture_height = texture_height;
+
+                        if(Format.optional_box_uv) Project.box_uv = box_uv;
+                        Canvas.updateAllUVs();
+                        updateSelection();
+                    }
+                }
+
+                for (let key in ModelProject.properties) {
+                    if (formResult[key] != undefined && Project[key] != formResult[key] && typeof Project[key] != "object") {
+                        was_changed = true;
+                    }
+                    ModelProject.properties[key].merge(Project, formResult);
+                }
+                Project.name = Project.name.trim();
+                Project.model_identifier = Project.model_identifier.trim();
+
+                if(save) Undo.finishEdit("Change project UV settings");
+                if(was_changed) Project.saved = false;
+
+                Blockbench.dispatchEvent("update_project_settings", formResult);
+                BARS.updateConditions();
+
+                if(Project.EditSession) {
+                    let metadata = {
+                        texture_width: Project.texture_width,
+                        texture_height: Project.texture_height,
+                        box_uv: Project.box_uv
+                    }
+                    for (let key in ModelProject.properties) {
+                        ModelProject.properties[key].copy(Project, metadata);
+                    }
+                    Project.EditSession.sendAll("change_project_meta", JSON.stringify(metadata));
+                }
+
                 dialog.hide();
             }
         });
@@ -265,29 +326,30 @@ export function openMahiProjectSettingsDialog() {
 }
 
 // Util methods
-function getExampleEntityName() {
+function generateExampleEntityName() {
     let index = Math.floor(Math.random() * FANCY_VANILLA_ENTITIES.length);
     return FANCY_VANILLA_ENTITIES[index];
 }
 
-function getEntityModelName(entityName: string, fallbackName: string) {
-    return getClassNameFromEntity(entityName, fallbackName, "Model");
+function getEntityModelName(entityName: string) {
+    return getClassNameFromEntity(entityName, "Model");
 }
 
-function getEntityAnimationName(entityName: string, fallbackName: string) {
-    return getClassNameFromEntity(entityName, fallbackName, "Animation");
+function getEntityAnimationName(entityName: string) {
+    return getClassNameFromEntity(entityName, "Animation");
 }
 
-function getEntityRendererName(entityName: string, fallbackName: string) {
-    return getClassNameFromEntity(entityName, fallbackName, "Renderer");
+function getEntityRendererName(entityName: string) {
+    return getClassNameFromEntity(entityName, "Renderer");
 }
 
-function getEntityRenderStateName(entityName: string, fallbackName: string) {
-    return getClassNameFromEntity(entityName, fallbackName, "RenderState");
+function getEntityRenderStateName(entityName: string) {
+    return getClassNameFromEntity(entityName, "RenderState");
 }
 
-function getClassNameFromEntity(entityName: string, fallbackName: string, suffix: string): string {
-    return (entityName === "" ? fallbackName : entityName) + suffix;
+function getClassNameFromEntity(entityName: string, suffix: string): string {
+    // if(entityName != "") entityName = Project[ENTITY_CLASS_PROPERTY];
+    return entityName + suffix;
 }
 
 

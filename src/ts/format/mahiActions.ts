@@ -39,6 +39,8 @@ export function loadMahiActions(): void {
 }
 
 export function unloadMahiActions(): void {
+    exportMahiModel.delete();
+    exportMahiAnimations.delete();
     exportMahiProject.delete();
 
     removeMonkeypatches()
