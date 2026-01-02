@@ -1,6 +1,6 @@
 import {CODEC_NAME} from "../constants";
 import {TEMPLATES, TemplateSet} from "./templates";
-import {EXPORT_VERSION_PROPERTY, openMahiProjectSettingsDialog} from "./mahiPluginProperties";
+import {EXPORT_VERSION_PROPERTY, openMahiProjectSettingsDialog} from "./properties";
 
 export const MAHI_CODEC: Codec = new Codec(CODEC_NAME, {
     name: "Mahi Entity",

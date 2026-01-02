@@ -39,10 +39,10 @@ var FANCY_VANILLA_ENTITIES = [
 
 /***/ },
 
-/***/ "./ts/format/mahiActions.ts"
-/*!**********************************!*\
-  !*** ./ts/format/mahiActions.ts ***!
-  \**********************************/
+/***/ "./ts/format/actions.ts"
+/*!******************************!*\
+  !*** ./ts/format/actions.ts ***!
+  \******************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -50,10 +50,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   loadMahiActions: () => (/* binding */ loadMahiActions),
 /* harmony export */   unloadMahiActions: () => (/* binding */ unloadMahiActions)
 /* harmony export */ });
-/* harmony import */ var _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./mahiEntityFormat */ "./ts/format/mahiEntityFormat.ts");
+/* harmony import */ var _format__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./format */ "./ts/format/format.ts");
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants */ "./ts/constants.ts");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils */ "./ts/utils.ts");
-/* harmony import */ var _mahiPluginProperties__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./mahiPluginProperties */ "./ts/format/mahiPluginProperties.ts");
+/* harmony import */ var _properties__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./properties */ "./ts/format/properties.ts");
 
 
 
@@ -61,7 +61,7 @@ __webpack_require__.r(__webpack_exports__);
 var exportMahiProject = new Action("export_mahi_project", {
     name: "Export Mahi Entity",
     icon: "fa-fish-fins",
-    condition: function () { return (0,_mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.isFormatMahiEntity)(); },
+    condition: function () { return (0,_format__WEBPACK_IMPORTED_MODULE_0__.isFormatMahiEntity)(); },
     click: function () {
         openExportProjectSettings();
     }
@@ -69,7 +69,7 @@ var exportMahiProject = new Action("export_mahi_project", {
 var exportMahiModel = new Action("export_mahi_model", {
     name: "Export Mahi Model",
     icon: "view_in_ar",
-    condition: function () { return (0,_mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.isFormatMahiEntity)(); },
+    condition: function () { return (0,_format__WEBPACK_IMPORTED_MODULE_0__.isFormatMahiEntity)(); },
     click: function () {
         openExportProjectSettings(true, false, false, false);
     }
@@ -77,7 +77,7 @@ var exportMahiModel = new Action("export_mahi_model", {
 var exportMahiAnimations = new Action("export_mahi_animations", {
     name: "Export Mahi Animations",
     icon: "animation",
-    condition: function () { return (0,_mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.isFormatMahiEntity)(); },
+    condition: function () { return (0,_format__WEBPACK_IMPORTED_MODULE_0__.isFormatMahiEntity)(); },
     click: function () {
         openExportProjectSettings(false, true, false, true);
     }
@@ -96,7 +96,7 @@ function unloadMahiActions() {
 }
 function monkeypatchMahiProjectWindowClick() {
     if (Format.id === _constants__WEBPACK_IMPORTED_MODULE_1__.CODEC_NAME) {
-        (0,_mahiPluginProperties__WEBPACK_IMPORTED_MODULE_3__.openMahiProjectSettingsDialog)();
+        (0,_properties__WEBPACK_IMPORTED_MODULE_3__.openMahiProjectSettingsDialog)();
     }
     else {
         return _utils__WEBPACK_IMPORTED_MODULE_2__.Monkeypatches.get(BarItems).click();
@@ -240,7 +240,7 @@ function exportModel() {
 function exportAnimation(animationFormResult, animationKeys) {
     var keys = animationKeys.filter(function (key) { return animationFormResult[key.hashCode()]; });
     var animations = keys.map(function (k) { return Animation["all"].find(function (anim) { return anim.name == k; }); });
-    var content = _mahiEntityFormat__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.compileAnimations(animations);
+    var content = _format__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.compileAnimations(animations);
     Blockbench.export({
         resource_id: "mahi_animations",
         type: "Mahi Modded Entity Animations",
@@ -257,10 +257,10 @@ function exportRenderState() {
 
 /***/ },
 
-/***/ "./ts/format/mahiEntityFormat.ts"
-/*!***************************************!*\
-  !*** ./ts/format/mahiEntityFormat.ts ***!
-  \***************************************/
+/***/ "./ts/format/format.ts"
+/*!*****************************!*\
+  !*** ./ts/format/format.ts ***!
+  \*****************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -271,7 +271,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants */ "./ts/constants.ts");
 /* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./templates */ "./ts/format/templates.ts");
-/* harmony import */ var _mahiPluginProperties__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./mahiPluginProperties */ "./ts/format/mahiPluginProperties.ts");
+/* harmony import */ var _properties__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./properties */ "./ts/format/properties.ts");
 
 
 
@@ -299,7 +299,7 @@ var MAHI_CODEC = new Codec(_constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_NAME, {
 MAHI_CODEC.templates = _templates__WEBPACK_IMPORTED_MODULE_1__.TEMPLATES;
 MAHI_CODEC.compileAnimations = function (animations) {
     if (animations === void 0) { animations = Animation["all"]; }
-    var exportVersion = Project[_mahiPluginProperties__WEBPACK_IMPORTED_MODULE_2__.EXPORT_VERSION_PROPERTY];
+    var exportVersion = Project[_properties__WEBPACK_IMPORTED_MODULE_2__.EXPORT_VERSION_PROPERTY];
     var templateSet = _templates__WEBPACK_IMPORTED_MODULE_1__.TEMPLATES[exportVersion];
     console.log(templateSet);
 };
@@ -333,7 +333,7 @@ var MAHI_FORMAT = new ModelFormat(_constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_
     pbr: true,
     new: function () {
         if (newProject(this)) {
-            return (0,_mahiPluginProperties__WEBPACK_IMPORTED_MODULE_2__.openMahiProjectSettingsDialog)();
+            return (0,_properties__WEBPACK_IMPORTED_MODULE_2__.openMahiProjectSettingsDialog)();
         }
     },
 });
@@ -345,10 +345,10 @@ function isFormatMahiEntity() {
 
 /***/ },
 
-/***/ "./ts/format/mahiPluginProperties.ts"
-/*!*******************************************!*\
-  !*** ./ts/format/mahiPluginProperties.ts ***!
-  \*******************************************/
+/***/ "./ts/format/properties.ts"
+/*!*********************************!*\
+  !*** ./ts/format/properties.ts ***!
+  \*********************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -779,17 +779,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ANIMATION_TEMPLATE_1_21_11: () => (/* binding */ ANIMATION_TEMPLATE_1_21_11),
 /* harmony export */   ANIMATION_TEMPLATE_26_1_SNAPSHOT_1: () => (/* binding */ ANIMATION_TEMPLATE_26_1_SNAPSHOT_1)
 /* harmony export */ });
-var __assign = (undefined && undefined.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 // export const ANIMATION_TEMPLATE_1_21_11 = createAnimationTemplate(`
 //     // Made with Blockbench %(bb_version) and Mahi %(mahi_version)
 //     // Exported for Minecraft version %(mc_versions)
@@ -807,6 +796,17 @@ var __assign = (undefined && undefined.__assign) || function () {
 //
 //     }
 // `);
+var __assign = (undefined && undefined.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var ANIMATION_TEMPLATE_1_21_11 = {
     file: "\n    %(comment_info)\n    public class %(animation_class) {\n        %(animations)\n    }",
     animation: "public static final AnimationDefinition %(name) = AnimationDefinition.Builder.withLength(%(length))%(looping)%(channels).build();",
@@ -981,8 +981,8 @@ var __webpack_exports__ = {};
   \*********************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ "./ts/constants.ts");
-/* harmony import */ var _format_mahiActions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./format/mahiActions */ "./ts/format/mahiActions.ts");
-/* harmony import */ var _format_mahiPluginProperties__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./format/mahiPluginProperties */ "./ts/format/mahiPluginProperties.ts");
+/* harmony import */ var _format_actions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./format/actions */ "./ts/format/actions.ts");
+/* harmony import */ var _format_properties__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./format/properties */ "./ts/format/properties.ts");
 
 
 
@@ -997,12 +997,12 @@ __webpack_require__.r(__webpack_exports__);
         min_version: "4.9.0",
         variant: "both",
         onload: function () {
-            (0,_format_mahiPluginProperties__WEBPACK_IMPORTED_MODULE_2__.loadMahiProperties)();
-            (0,_format_mahiActions__WEBPACK_IMPORTED_MODULE_1__.loadMahiActions)();
+            (0,_format_properties__WEBPACK_IMPORTED_MODULE_2__.loadMahiProperties)();
+            (0,_format_actions__WEBPACK_IMPORTED_MODULE_1__.loadMahiActions)();
         },
         onunload: function () {
-            (0,_format_mahiPluginProperties__WEBPACK_IMPORTED_MODULE_2__.unloadMahiProperties)();
-            (0,_format_mahiActions__WEBPACK_IMPORTED_MODULE_1__.unloadMahiActions)();
+            (0,_format_properties__WEBPACK_IMPORTED_MODULE_2__.unloadMahiProperties)();
+            (0,_format_actions__WEBPACK_IMPORTED_MODULE_1__.unloadMahiActions)();
         }
     });
 })();

@@ -1,6 +1,6 @@
 import {ID, VERSION} from "./constants";
-import {loadMahiActions, unloadMahiActions} from "./format/mahiActions";
-import {loadMahiProperties, unloadMahiProperties} from "./format/mahiPluginProperties";
+import {loadMahiActions, unloadMahiActions} from "./format/actions";
+import {loadMahiProperties, unloadMahiProperties} from "./format/properties";
 
 (function() {
     BBPlugin.register(ID, {

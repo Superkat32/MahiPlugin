@@ -1,7 +1,7 @@
-import {isFormatMahiEntity, MAHI_CODEC} from "./mahiEntityFormat";
+import {isFormatMahiEntity, MAHI_CODEC} from "./format";
 import {CODEC_NAME} from "../constants";
 import {addMonkeypatch, Monkeypatches, removeMonkeypatches} from "../utils";
-import {openMahiProjectSettingsDialog} from "./mahiPluginProperties";
+import {openMahiProjectSettingsDialog} from "./properties";
 
 const exportMahiProject: Action = new Action("export_mahi_project", {
     name: "Export Mahi Entity",
