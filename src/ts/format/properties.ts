@@ -1,5 +1,6 @@
 import {CODEC_NAME, FANCY_VANILLA_ENTITIES} from "../constants";
 import {getTemplateOptionNames, TEMPLATES} from "./templates";
+import {getEntityAnimationName, getEntityModelName, getEntityRendererName, getEntityRenderStateName} from "../utils";
 
 export const ENTITY_CLASS_PROPERTY: string = "mahi_entity_class";
 export const EXPORT_VERSION_PROPERTY: string = "mahi_export_version";
@@ -330,29 +331,6 @@ function generateExampleEntityName() {
     let index = Math.floor(Math.random() * FANCY_VANILLA_ENTITIES.length);
     return FANCY_VANILLA_ENTITIES[index];
 }
-
-function getEntityModelName(entityName: string) {
-    return getClassNameFromEntity(entityName, "Model");
-}
-
-function getEntityAnimationName(entityName: string) {
-    return getClassNameFromEntity(entityName, "Animation");
-}
-
-function getEntityRendererName(entityName: string) {
-    return getClassNameFromEntity(entityName, "Renderer");
-}
-
-function getEntityRenderStateName(entityName: string) {
-    return getClassNameFromEntity(entityName, "RenderState");
-}
-
-function getClassNameFromEntity(entityName: string, suffix: string): string {
-    // if(entityName != "") entityName = Project[ENTITY_CLASS_PROPERTY];
-    return entityName + suffix;
-}
-
-
 
 function createMahiPluginProperty<T extends keyof IPropertyType>(type: T, id: string, options: PropertyOptions): Property<T> {
     return new Property<T>(ModelProject, type, id, options);

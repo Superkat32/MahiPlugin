@@ -54,6 +54,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants */ "./ts/constants.ts");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils */ "./ts/utils.ts");
 /* harmony import */ var _properties__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./properties */ "./ts/format/properties.ts");
+/* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./templates */ "./ts/format/templates.ts");
+/* harmony import */ var _templates_templateUtils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./templates/templateUtils */ "./ts/format/templates/templateUtils.ts");
+
+
 
 
 
@@ -232,26 +236,41 @@ function exportProject(exportFormResults, animationFormResults, animationKeys) {
         exportRenderer();
     }
     if (exportFormResults.export_renderstate) {
-        exportRenderState();
+        exportRenderState(animationFormResults, animationKeys);
     }
 }
 function exportModel() {
 }
 function exportAnimation(animationFormResult, animationKeys) {
+    var animationTemplate = (0,_templates__WEBPACK_IMPORTED_MODULE_4__.getProjectTemplateSet)().animation;
     var keys = animationKeys.filter(function (key) { return animationFormResult[key.hashCode()]; });
     var animations = keys.map(function (k) { return Animation["all"].find(function (anim) { return anim.name == k; }); });
-    var content = _format__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.compileAnimations(animations);
+    var content = animationTemplate.createFileContent(animations);
     Blockbench.export({
         resource_id: "mahi_animations",
         type: "Mahi Modded Entity Animations",
         extensions: ["java"],
-        name: (Project.geometry_name || "model"),
+        name: (0,_templates_templateUtils__WEBPACK_IMPORTED_MODULE_5__.getProjectAnimationClass)(),
         content: content
     });
 }
 function exportRenderer() {
 }
-function exportRenderState() {
+function exportRenderState(animationFormResult, animationKeys) {
+    var renderStateTemplate = (0,_templates__WEBPACK_IMPORTED_MODULE_4__.getProjectTemplateSet)().renderState;
+    var animations = "";
+    if (animationFormResult != undefined && animationKeys != undefined) {
+        var keys = animationKeys.filter(function (key) { return animationFormResult[key.hashCode()]; });
+        animations = keys.map(function (k) { return Animation["all"].find(function (anim) { return anim.name == k; }); });
+    }
+    var content = renderStateTemplate.createFileContent(animations);
+    Blockbench.export({
+        resource_id: "mahi_renderstate",
+        type: "Mahi Modded Render State",
+        extensions: ["java"],
+        name: (0,_templates_templateUtils__WEBPACK_IMPORTED_MODULE_5__.getProjectRenderStateClass)(),
+        content: content
+    });
 }
 
 
@@ -370,6 +389,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants */ "./ts/constants.ts");
 /* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./templates */ "./ts/format/templates.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils */ "./ts/utils.ts");
 var __rest = (undefined && undefined.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -381,6 +401,7 @@ var __rest = (undefined && undefined.__rest) || function (s, e) {
         }
     return t;
 };
+
 
 
 var ENTITY_CLASS_PROPERTY = "mahi_entity_class";
@@ -436,7 +457,7 @@ function createPluginProperties() {
         createMahiPluginProperty("string", MODEL_CLASS_PROPERTY, {
             label: "Model Class",
             description: "Your Entity's Model Class name.",
-            placeholder: getEntityModelName(exampleEntity),
+            placeholder: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getEntityModelName)(exampleEntity),
             options: {
                 whitespace: true,
                 info: {
@@ -452,7 +473,7 @@ function createPluginProperties() {
         createMahiPluginProperty("string", ANIMATION_CLASS_PROPERTY, {
             label: "Animation Class",
             description: "Your Entity's Animation Class name.",
-            placeholder: getEntityAnimationName(exampleEntity),
+            placeholder: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getEntityAnimationName)(exampleEntity),
             options: {
                 entityPlaceholder: {
                     suffix: "Animation"
@@ -463,7 +484,7 @@ function createPluginProperties() {
         createMahiPluginProperty("string", RENDERER_CLASS_PROPERTY, {
             label: "Renderer Class",
             description: "Your Entity's Renderer Class name.",
-            placeholder: getEntityRendererName(exampleEntity),
+            placeholder: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getEntityRendererName)(exampleEntity),
             options: {
                 entityPlaceholder: {
                     suffix: "Renderer"
@@ -474,7 +495,7 @@ function createPluginProperties() {
         createMahiPluginProperty("string", RENDER_STATE_CLASS_PROPERTY, {
             label: "Render State Class",
             description: "Your Entity's Render State Class name.",
-            placeholder: getEntityRenderStateName(exampleEntity),
+            placeholder: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getEntityRenderStateName)(exampleEntity),
             options: {
                 entityPlaceholder: {
                     suffix: "RenderState"
@@ -600,13 +621,13 @@ function openMahiProjectSettingsDialog() {
                     // Update the dynamic options based on the input Entity Class
                     var inputEntityName = formResult[ENTITY_CLASS_PROPERTY] != "" ? formResult[ENTITY_CLASS_PROPERTY] : exampleEntity_1;
                     // @ts-ignore
-                    document.getElementById(MODEL_CLASS_PROPERTY)["placeholder"] = getEntityModelName(inputEntityName);
+                    document.getElementById(MODEL_CLASS_PROPERTY)["placeholder"] = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getEntityModelName)(inputEntityName);
                     // @ts-ignore
-                    document.getElementById(ANIMATION_CLASS_PROPERTY)["placeholder"] = getEntityAnimationName(inputEntityName);
+                    document.getElementById(ANIMATION_CLASS_PROPERTY)["placeholder"] = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getEntityAnimationName)(inputEntityName);
                     // @ts-ignore
-                    document.getElementById(RENDERER_CLASS_PROPERTY)["placeholder"] = getEntityRendererName(inputEntityName);
+                    document.getElementById(RENDERER_CLASS_PROPERTY)["placeholder"] = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getEntityRendererName)(inputEntityName);
                     // @ts-ignore
-                    document.getElementById(RENDER_STATE_CLASS_PROPERTY)["placeholder"] = getEntityRenderStateName(inputEntityName);
+                    document.getElementById(RENDER_STATE_CLASS_PROPERTY)["placeholder"] = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getEntityRenderStateName)(inputEntityName);
                 }
                 catch (error) { }
             },
@@ -674,22 +695,6 @@ function generateExampleEntityName() {
     var index = Math.floor(Math.random() * _constants__WEBPACK_IMPORTED_MODULE_0__.FANCY_VANILLA_ENTITIES.length);
     return _constants__WEBPACK_IMPORTED_MODULE_0__.FANCY_VANILLA_ENTITIES[index];
 }
-function getEntityModelName(entityName) {
-    return getClassNameFromEntity(entityName, "Model");
-}
-function getEntityAnimationName(entityName) {
-    return getClassNameFromEntity(entityName, "Animation");
-}
-function getEntityRendererName(entityName) {
-    return getClassNameFromEntity(entityName, "Renderer");
-}
-function getEntityRenderStateName(entityName) {
-    return getClassNameFromEntity(entityName, "RenderState");
-}
-function getClassNameFromEntity(entityName, suffix) {
-    // if(entityName != "") entityName = Project[ENTITY_CLASS_PROPERTY];
-    return entityName + suffix;
-}
 function createMahiPluginProperty(type, id, options) {
     return new Property(ModelProject, type, id, options);
 }
@@ -710,37 +715,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   CLASS_COMMENT_INFO: () => (/* binding */ CLASS_COMMENT_INFO),
 /* harmony export */   TEMPLATES: () => (/* binding */ TEMPLATES),
-/* harmony export */   createAnimationTemplate: () => (/* binding */ createAnimationTemplate),
-/* harmony export */   createModelTemplate: () => (/* binding */ createModelTemplate),
-/* harmony export */   createRenderStateTemplate: () => (/* binding */ createRenderStateTemplate),
-/* harmony export */   createRendererTemplate: () => (/* binding */ createRendererTemplate),
+/* harmony export */   getProjectTemplateSet: () => (/* binding */ getProjectTemplateSet),
 /* harmony export */   getTemplateOptionNames: () => (/* binding */ getTemplateOptionNames)
 /* harmony export */ });
-/* harmony import */ var _templates_modelTemplates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./templates/modelTemplates */ "./ts/format/templates/modelTemplates.ts");
-/* harmony import */ var _templates_animationTemplates__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./templates/animationTemplates */ "./ts/format/templates/animationTemplates.ts");
-/* harmony import */ var _templates_rendererTemplates__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./templates/rendererTemplates */ "./ts/format/templates/rendererTemplates.ts");
-/* harmony import */ var _templates_renderStateTemplates__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./templates/renderStateTemplates */ "./ts/format/templates/renderStateTemplates.ts");
+/* harmony import */ var _templates_animationTemplates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./templates/animationTemplates */ "./ts/format/templates/animationTemplates.ts");
+/* harmony import */ var _properties__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./properties */ "./ts/format/properties.ts");
+/* harmony import */ var _templates_renderStateTemplates__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./templates/renderStateTemplates */ "./ts/format/templates/renderStateTemplates.ts");
 
 
 
-
-var CLASS_COMMENT_INFO = "/**\n    * Made with Blockbench %(bb_version) and Mahi %(mahi_version).\n    * Exported for Minecraft %(mc_version) or later.\n    * @author %(author)\n    */";
+var CLASS_COMMENT_INFO = "/**\n * Made with Blockbench %(bb_version) and Mahi %(mahi_version).\n * Exported for Minecraft %(mc_version) or later.<br><br>\n * Copy this file into your mod and generate all the required imports.\n * @author %(author)\n */";
 var TEMPLATES = {
     "1.21.11-mojmaps": {
         name: "Fabric 1.21.11 (Mojmaps)",
-        model: _templates_modelTemplates__WEBPACK_IMPORTED_MODULE_0__.MODEL_TEMPLATE_1_21_11,
-        animation: _templates_animationTemplates__WEBPACK_IMPORTED_MODULE_1__.ANIMATION_TEMPLATE_1_21_11,
-        renderer: _templates_rendererTemplates__WEBPACK_IMPORTED_MODULE_2__.RENDERER_TEMPLATE_1_21_11,
-        renderState: _templates_renderStateTemplates__WEBPACK_IMPORTED_MODULE_3__.RENDER_STATE_TEMPLATE_1_21_11,
+        version: "1.21.11",
+        // model: MODEL_TEMPLATE_1_21_11,
+        animation: _templates_animationTemplates__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_TEMPLATE_1_21_11,
+        // renderer: RENDERER_TEMPLATE_1_21_11,
+        renderState: _templates_renderStateTemplates__WEBPACK_IMPORTED_MODULE_2__.RENDER_STATE_TEMPLATE_1_21_11
     },
     "26.1-snapshot1-mojmaps": {
         name: "Fabric 26.1-snapshot1 (Mojmaps)",
-        model: _templates_modelTemplates__WEBPACK_IMPORTED_MODULE_0__.MODEL_TEMPLATE_26_1_SNAPSHOT_1,
-        animation: _templates_animationTemplates__WEBPACK_IMPORTED_MODULE_1__.ANIMATION_TEMPLATE_26_1_SNAPSHOT_1,
-        renderer: _templates_rendererTemplates__WEBPACK_IMPORTED_MODULE_2__.RENDERER_TEMPLATE_26_1_SNAPSHOT_1,
-        renderState: _templates_renderStateTemplates__WEBPACK_IMPORTED_MODULE_3__.RENDER_STATE_TEMPLATE_26_1_SNAPSHOT_1
+        version: "26.1-snapshot1",
+        // model: MODEL_TEMPLATE_26_1_SNAPSHOT_1,
+        animation: _templates_animationTemplates__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_TEMPLATE_26_1_SNAPSHOT_1,
+        // renderer: RENDERER_TEMPLATE_26_1_SNAPSHOT_1,
+        renderState: _templates_renderStateTemplates__WEBPACK_IMPORTED_MODULE_2__.RENDER_STATE_TEMPLATE_26_1_SNAPSHOT_1
     }
 };
+function getProjectTemplateSet() {
+    return TEMPLATES[Project[_properties__WEBPACK_IMPORTED_MODULE_1__.EXPORT_VERSION_PROPERTY]];
+}
 function getTemplateOptionNames(whitespace) {
     if (whitespace === void 0) { whitespace = false; }
     var options = {};
@@ -751,18 +756,6 @@ function getTemplateOptionNames(whitespace) {
         options["whitespace"] = true;
     }
     return options;
-}
-function createModelTemplate(file) {
-    return { file: file, type: "model" };
-}
-function createAnimationTemplate(file) {
-    return { file: file, type: "animation" };
-}
-function createRendererTemplate(file) {
-    return { file: file, type: "renderer" };
-}
-function createRenderStateTemplate(file) {
-    return { file: file, type: "renderState" };
 }
 
 
@@ -777,25 +770,10 @@ function createRenderStateTemplate(file) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ANIMATION_TEMPLATE_1_21_11: () => (/* binding */ ANIMATION_TEMPLATE_1_21_11),
-/* harmony export */   ANIMATION_TEMPLATE_26_1_SNAPSHOT_1: () => (/* binding */ ANIMATION_TEMPLATE_26_1_SNAPSHOT_1)
+/* harmony export */   ANIMATION_TEMPLATE_26_1_SNAPSHOT_1: () => (/* binding */ ANIMATION_TEMPLATE_26_1_SNAPSHOT_1),
+/* harmony export */   AnimationTemplate: () => (/* binding */ AnimationTemplate)
 /* harmony export */ });
-// export const ANIMATION_TEMPLATE_1_21_11 = createAnimationTemplate(`
-//     // Made with Blockbench %(bb_version) and Mahi %(mahi_version)
-//     // Exported for Minecraft version %(mc_versions)
-//     // Paste this class into your mod and generate all the required imports
-//     public class %(animation_class) {
-//
-//     }
-// `);
-//
-// export const ANIMATION_TEMPLATE_26_1_SNAPSHOT_1 = createAnimationTemplate(`
-//     // Made with Blockbench %(bb_version) and Mahi %(mahi_version)
-//     // Exported for Minecraft version %(mc_versions)
-//     // Paste this class into your mod and generate all the required imports
-//     public class %(animation_class) {
-//
-//     }
-// `);
+/* harmony import */ var _templateUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./templateUtils */ "./ts/format/templates/templateUtils.ts");
 var __assign = (undefined && undefined.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -807,31 +785,103 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var ANIMATION_TEMPLATE_1_21_11 = {
-    file: "\n    %(comment_info)\n    public class %(animation_class) {\n        %(animations)\n    }",
+
+var AnimationTemplate = /** @class */ (function () {
+    function AnimationTemplate(config) {
+        this.config = config;
+    }
+    AnimationTemplate.prototype.createFileContent = function (animations) {
+        var _this = this;
+        if (animations === void 0) { animations = Animation["all"]; }
+        var commentInfo = (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.createCommentInfo)();
+        var file = new _templateUtils__WEBPACK_IMPORTED_MODULE_0__.FileBuilder(this.config.file);
+        file.replaceVar("comment_info", commentInfo);
+        file.replaceVar("animation_class", (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.getProjectAnimationClass)());
+        var animationStrings = [];
+        animations.forEach(function (animation) {
+            var animString = new _templateUtils__WEBPACK_IMPORTED_MODULE_0__.FileBuilder(_this.config.animation);
+            animString.replaceVar("name", animation.name.toUpperCase());
+            animString.replaceVar("length", (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.toFloat)(animation.length));
+            animString.replaceVar("looping", animation.loop == "loop" ? _this.config.looping : "");
+            var channelStrings = [];
+            var channelTypes = _this.config.channelTypes;
+            for (var id in animation.animators) {
+                var animator = animation.animators[id];
+                if (!(animator instanceof BoneAnimator))
+                    continue;
+                var _loop_1 = function (channelId) {
+                    if (!(animator[channelId] && animator[channelId].length))
+                        return "continue";
+                    var keyframes = animator[channelId].slice().sort(function (a, b) { return a.time - b.time; });
+                    var keyframeStrings = [];
+                    keyframes.forEach(function (keyframe, index) {
+                        var keyframeString = _this.addKeyframe(channelId, keyframe.time, keyframe.calc("x"), keyframe.calc("y"), keyframe.calc("z"), keyframe.interpolation);
+                        keyframeStrings.push(keyframeString);
+                        if (keyframe.data_points[1]) {
+                            var keyframeString1 = _this.addKeyframe(channelId, keyframe.time + 0.001, keyframe.calc("x", 1), keyframe.calc("y", 1), keyframe.calc("z", 1), keyframe.interpolation);
+                            keyframeStrings.push(keyframeString1);
+                        }
+                        else if (keyframe.interpolation == "step" && keyframes[index + 1]) {
+                            var nextKeyframe = keyframes[index + 1];
+                            var nextKeyframeString = _this.addKeyframe(channelId, nextKeyframe.time - 0.001, keyframe.calc("x"), keyframe.calc("y"), keyframe.calc("z"), "linear");
+                            keyframeStrings.push(nextKeyframeString);
+                        }
+                    });
+                    var channelBuilder = new _templateUtils__WEBPACK_IMPORTED_MODULE_0__.FileBuilder(_this.config.channel);
+                    channelBuilder.replaceVar("name", animator.name);
+                    channelBuilder.replaceVar("channel_type", channelTypes[channelId]);
+                    channelBuilder.replaceVar("keyframes", "\n\t\t\t" + keyframeStrings.join(",\n\t\t\t") + "\n\t\t");
+                    channelStrings.push(channelBuilder.build());
+                };
+                for (var channelId in channelTypes) {
+                    _loop_1(channelId);
+                }
+            }
+            animString.replaceVar("channels", "\n\t\t" + channelStrings.join("\n\t\t") + "\n\t\t");
+            animationStrings.push(animString.build());
+        });
+        file.replaceVar("animations", animationStrings.join("\n\n\t"));
+        return file.build();
+    };
+    AnimationTemplate.prototype.addKeyframe = function (channelId, time, x, y, z, easing) {
+        if (channelId == "position")
+            x *= -1;
+        if (channelId == "rotation") {
+            x *= -1;
+            y *= -1;
+        }
+        var keyframeBuilder = new _templateUtils__WEBPACK_IMPORTED_MODULE_0__.FileBuilder(this.config.keyframeTypes[channelId]);
+        keyframeBuilder.replaceVar("time", (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.toFloat)(time));
+        keyframeBuilder.replaceVar("x", (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.toFloat)(x));
+        keyframeBuilder.replaceVar("y", (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.toFloat)(y));
+        keyframeBuilder.replaceVar("z", (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.toFloat)(z));
+        keyframeBuilder.replaceVar("easing", this.config.easingTypes[easing] || this.config.easingTypes.linear);
+        return keyframeBuilder.build();
+    };
+    return AnimationTemplate;
+}());
+
+var ANIMATION_TEMPLATE_1_21_11 = new AnimationTemplate({
+    file: "%(comment_info)\npublic class %(animation_class) {\n    %(animations)\n}",
     animation: "public static final AnimationDefinition %(name) = AnimationDefinition.Builder.withLength(%(length))%(looping)%(channels).build();",
-    looping: ".looping()"
-};
-var ANIMATION_TEMPLATE_26_1_SNAPSHOT_1 = __assign(__assign({}, ANIMATION_TEMPLATE_1_21_11), { looping: ".loop()" });
-
-
-/***/ },
-
-/***/ "./ts/format/templates/modelTemplates.ts"
-/*!***********************************************!*\
-  !*** ./ts/format/templates/modelTemplates.ts ***!
-  \***********************************************/
-(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   MODEL_TEMPLATE_1_21_11: () => (/* binding */ MODEL_TEMPLATE_1_21_11),
-/* harmony export */   MODEL_TEMPLATE_26_1_SNAPSHOT_1: () => (/* binding */ MODEL_TEMPLATE_26_1_SNAPSHOT_1)
-/* harmony export */ });
-/* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../templates */ "./ts/format/templates.ts");
-
-var MODEL_TEMPLATE_1_21_11 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.createModelTemplate)("\n    // Made with Blockbench %(bb_version) and Mahi %(mahi_version)\n    // Exported for Minecraft version %(mc_versions)\n    // Paste this class into your mod and generate all the required imports\n    public class %(model_class) {\n    \n    }\n");
-var MODEL_TEMPLATE_26_1_SNAPSHOT_1 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.createModelTemplate)("\n    // Made with Blockbench %(bb_version) and Mahi %(mahi_version)\n    // Exported for Minecraft version %(mc_versions)\n    // Paste this class into your mod and generate all the required imports\n    public class %(model_class) {\n    \n    }\n");
+    looping: ".looping()",
+    channel: ".addAnimation(\"%(name)\", new AnimationChannel(%(channel_type), %(keyframes)))",
+    channelTypes: {
+        rotation: "AnimationChannel.Targets.ROTATION",
+        position: "AnimationChannel.Targets.POSITION",
+        scale: "AnimationChannel.Targets.SCALE"
+    },
+    keyframeTypes: {
+        rotation: "new Keyframe(%(time), KeyframeAnimations.degreeVec(%(x), %(y), %(z)), %(easing))",
+        position: "new Keyframe(%(time), KeyframeAnimations.posVec(%(x), %(y), %(z)), %(easing))",
+        scale: "new Keyframe(%(time), KeyframeAnimations.scaleVec(%(x), %(y), %(z)), %(easing))"
+    },
+    easingTypes: {
+        linear: "AnimationChannel.Interpolations.LINEAR",
+        catmullrom: "AnimationChannel.Interpolations.CATMULLROM",
+    }
+});
+var ANIMATION_TEMPLATE_26_1_SNAPSHOT_1 = new AnimationTemplate(__assign(__assign({}, ANIMATION_TEMPLATE_1_21_11.config), { looping: ".loop()" }));
 
 
 /***/ },
@@ -845,31 +895,166 @@ var MODEL_TEMPLATE_26_1_SNAPSHOT_1 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   RENDER_STATE_TEMPLATE_1_21_11: () => (/* binding */ RENDER_STATE_TEMPLATE_1_21_11),
-/* harmony export */   RENDER_STATE_TEMPLATE_26_1_SNAPSHOT_1: () => (/* binding */ RENDER_STATE_TEMPLATE_26_1_SNAPSHOT_1)
+/* harmony export */   RENDER_STATE_TEMPLATE_26_1_SNAPSHOT_1: () => (/* binding */ RENDER_STATE_TEMPLATE_26_1_SNAPSHOT_1),
+/* harmony export */   RenderStateTemplate: () => (/* binding */ RenderStateTemplate)
 /* harmony export */ });
-/* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../templates */ "./ts/format/templates.ts");
+/* harmony import */ var _templateUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./templateUtils */ "./ts/format/templates/templateUtils.ts");
+var __assign = (undefined && undefined.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 
-var RENDER_STATE_TEMPLATE_1_21_11 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.createRenderStateTemplate)("\n    // Made with Blockbench %(bb_version) and Mahi %(mahi_version)\n    // Exported for Minecraft version %(mc_versions)\n    // Paste this class into your mod and generate all the required imports\n    public class %(render_state_class) {\n    \n    }\n");
-var RENDER_STATE_TEMPLATE_26_1_SNAPSHOT_1 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.createRenderStateTemplate)("\n    // Made with Blockbench %(bb_version) and Mahi %(mahi_version)\n    // Exported for Minecraft version %(mc_versions)\n    // Paste this class into your mod and generate all the required imports\n    public class %(render_state_class) {\n    \n    }\n");
+var RenderStateTemplate = /** @class */ (function () {
+    function RenderStateTemplate(config) {
+        this.config = config;
+    }
+    RenderStateTemplate.prototype.createFileContent = function (animations) {
+        var _this = this;
+        if (animations === void 0) { animations = Animation["all"]; }
+        var commentInfo = (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.createCommentInfo)();
+        var file = new _templateUtils__WEBPACK_IMPORTED_MODULE_0__.FileBuilder(this.config.file);
+        file.replaceVar("comment_info", commentInfo);
+        file.replaceVar("renderstate_class", (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.getProjectRenderStateClass)());
+        file.replaceVar("renderstate_superclass", (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.getProjectRenderStateSuperclass)());
+        var animationStrings = [];
+        animations.forEach(function (animation) {
+            var animString = new _templateUtils__WEBPACK_IMPORTED_MODULE_0__.FileBuilder(_this.config.animationState);
+            animString.replaceVar("name", animation.name);
+            animationStrings.push(animString.build());
+        });
+        file.replaceVar("animation_states", animationStrings.join("\n\t"));
+        return file.build();
+    };
+    return RenderStateTemplate;
+}());
+
+var RENDER_STATE_TEMPLATE_1_21_11 = new RenderStateTemplate({
+    file: "%(comment_info)\n@Environment(EnvType.CLIENT)\npublic class %(renderstate_class) extends %(renderstate_superclass) {\n    %(animation_states)\n}",
+    animationState: "public final AnimationState %(name)AnimationState = new AnimationState();"
+});
+var RENDER_STATE_TEMPLATE_26_1_SNAPSHOT_1 = new RenderStateTemplate(__assign({}, RENDER_STATE_TEMPLATE_1_21_11.config));
 
 
 /***/ },
 
-/***/ "./ts/format/templates/rendererTemplates.ts"
-/*!**************************************************!*\
-  !*** ./ts/format/templates/rendererTemplates.ts ***!
-  \**************************************************/
+/***/ "./ts/format/templates/templateUtils.ts"
+/*!**********************************************!*\
+  !*** ./ts/format/templates/templateUtils.ts ***!
+  \**********************************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   RENDERER_TEMPLATE_1_21_11: () => (/* binding */ RENDERER_TEMPLATE_1_21_11),
-/* harmony export */   RENDERER_TEMPLATE_26_1_SNAPSHOT_1: () => (/* binding */ RENDERER_TEMPLATE_26_1_SNAPSHOT_1)
+/* harmony export */   FileBuilder: () => (/* binding */ FileBuilder),
+/* harmony export */   createCommentInfo: () => (/* binding */ createCommentInfo),
+/* harmony export */   getModIdStringOrReference: () => (/* binding */ getModIdStringOrReference),
+/* harmony export */   getProjectAnimationClass: () => (/* binding */ getProjectAnimationClass),
+/* harmony export */   getProjectEntityClass: () => (/* binding */ getProjectEntityClass),
+/* harmony export */   getProjectModelClass: () => (/* binding */ getProjectModelClass),
+/* harmony export */   getProjectModelSuperclass: () => (/* binding */ getProjectModelSuperclass),
+/* harmony export */   getProjectRenderStateClass: () => (/* binding */ getProjectRenderStateClass),
+/* harmony export */   getProjectRenderStateSuperclass: () => (/* binding */ getProjectRenderStateSuperclass),
+/* harmony export */   getProjectRendererClass: () => (/* binding */ getProjectRendererClass),
+/* harmony export */   getProjectRendererSuperclass: () => (/* binding */ getProjectRendererSuperclass),
+/* harmony export */   getVariableRegex: () => (/* binding */ getVariableRegex),
+/* harmony export */   toFloat: () => (/* binding */ toFloat)
 /* harmony export */ });
 /* harmony import */ var _templates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../templates */ "./ts/format/templates.ts");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../constants */ "./ts/constants.ts");
+/* harmony import */ var _properties__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../properties */ "./ts/format/properties.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../utils */ "./ts/utils.ts");
 
-var RENDERER_TEMPLATE_1_21_11 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.createRendererTemplate)("\n    // Made with Blockbench %(bb_version) and Mahi %(mahi_version)\n    // Exported for Minecraft version %(mc_versions)\n    // Paste this class into your mod and generate all the required imports\n    public class %(renderer_class) {\n    \n    }\n");
-var RENDERER_TEMPLATE_26_1_SNAPSHOT_1 = (0,_templates__WEBPACK_IMPORTED_MODULE_0__.createRendererTemplate)("\n    // Made with Blockbench %(bb_version) and Mahi %(mahi_version)\n    // Exported for Minecraft version %(mc_versions)\n    // Paste this class into your mod and generate all the required imports\n    public class %(renderer_class) {\n    \n    }\n");
+
+
+
+var FileBuilder = /** @class */ (function () {
+    function FileBuilder(file) {
+        this.file = file;
+        this.regex = getVariableRegex;
+    }
+    FileBuilder.prototype.replaceVar = function (key, value) {
+        this.file = this.file.replace(this.regex(key), value);
+    };
+    FileBuilder.prototype.build = function () {
+        return this.file;
+    };
+    return FileBuilder;
+}());
+
+function createCommentInfo() {
+    var info = new FileBuilder(_templates__WEBPACK_IMPORTED_MODULE_0__.CLASS_COMMENT_INFO);
+    info.replaceVar("bb_version", Blockbench.version);
+    info.replaceVar("mahi_version", _constants__WEBPACK_IMPORTED_MODULE_1__.VERSION);
+    info.replaceVar("mc_version", _templates__WEBPACK_IMPORTED_MODULE_0__.TEMPLATES[Project[_properties__WEBPACK_IMPORTED_MODULE_2__.EXPORT_VERSION_PROPERTY]].version);
+    info.replaceVar("author", Settings.get("username").toString() || "Author");
+    return info.build();
+}
+function getVariableRegex(name) {
+    return new RegExp("%\\(".concat(name, "\\)"), 'g');
+}
+function getModIdStringOrReference() {
+    var modelIdentifier = Project.model_identifier;
+    if (!modelIdentifier || modelIdentifier == "")
+        return '"mod_id"';
+    if (modelIdentifier.includes(".")) { // assume modid entry is a static string reference
+        return modelIdentifier;
+    }
+    return "\"".concat(modelIdentifier, "\"");
+}
+function getProjectEntityClass() {
+    if (Project[_properties__WEBPACK_IMPORTED_MODULE_2__.ENTITY_CLASS_PROPERTY])
+        return Project[_properties__WEBPACK_IMPORTED_MODULE_2__.ENTITY_CLASS_PROPERTY];
+    return "Entity";
+}
+function getProjectModelClass() {
+    if (Project[_properties__WEBPACK_IMPORTED_MODULE_2__.MODEL_CLASS_PROPERTY])
+        return Project[_properties__WEBPACK_IMPORTED_MODULE_2__.MODEL_CLASS_PROPERTY];
+    return (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getEntityModelName)(getProjectEntityClass());
+}
+function getProjectAnimationClass() {
+    if (Project[_properties__WEBPACK_IMPORTED_MODULE_2__.ANIMATION_CLASS_PROPERTY])
+        return Project[_properties__WEBPACK_IMPORTED_MODULE_2__.ANIMATION_CLASS_PROPERTY];
+    return (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getEntityAnimationName)(getProjectEntityClass());
+}
+function getProjectRendererClass() {
+    if (Project[_properties__WEBPACK_IMPORTED_MODULE_2__.RENDERER_CLASS_PROPERTY])
+        return Project[_properties__WEBPACK_IMPORTED_MODULE_2__.RENDERER_CLASS_PROPERTY];
+    return (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getEntityRendererName)(getProjectEntityClass());
+}
+function getProjectRenderStateClass() {
+    if (Project[_properties__WEBPACK_IMPORTED_MODULE_2__.RENDER_STATE_CLASS_PROPERTY])
+        return Project[_properties__WEBPACK_IMPORTED_MODULE_2__.RENDER_STATE_CLASS_PROPERTY];
+    return (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getEntityRenderStateName)(getProjectEntityClass());
+}
+function getProjectModelSuperclass() {
+    if (Project[_properties__WEBPACK_IMPORTED_MODULE_2__.MODEL_SUPERCLASS_PROPERTY])
+        return Project[_properties__WEBPACK_IMPORTED_MODULE_2__.MODEL_SUPERCLASS_PROPERTY];
+    return "EntityModel";
+}
+function getProjectRendererSuperclass() {
+    if (Project[_properties__WEBPACK_IMPORTED_MODULE_2__.RENDERER_SUPERCLASS_PROPERTY])
+        return Project[_properties__WEBPACK_IMPORTED_MODULE_2__.RENDERER_SUPERCLASS_PROPERTY];
+    return "MobRenderer";
+}
+function getProjectRenderStateSuperclass() {
+    if (Project[_properties__WEBPACK_IMPORTED_MODULE_2__.RENDER_STATE_SUPERCLASS_PROPERTY])
+        return Project[_properties__WEBPACK_IMPORTED_MODULE_2__.RENDER_STATE_SUPERCLASS_PROPERTY];
+    return "LivingEntityRenderState";
+}
+function toFloat(number) {
+    var trimmed = trimFloatNumber(number) + '';
+    if (!trimmed.includes(".")) {
+        trimmed += ".0";
+    }
+    return "".concat(trimmed, "F");
+}
 
 
 /***/ },
@@ -884,6 +1069,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Monkeypatches: () => (/* binding */ Monkeypatches),
 /* harmony export */   addMonkeypatch: () => (/* binding */ addMonkeypatch),
+/* harmony export */   getEntityAnimationName: () => (/* binding */ getEntityAnimationName),
+/* harmony export */   getEntityModelName: () => (/* binding */ getEntityModelName),
+/* harmony export */   getEntityRenderStateName: () => (/* binding */ getEntityRenderStateName),
+/* harmony export */   getEntityRendererName: () => (/* binding */ getEntityRendererName),
 /* harmony export */   removeMonkeypatches: () => (/* binding */ removeMonkeypatches)
 /* harmony export */ });
 // Credit to the Geckolib Blockbench plugin for the Monkeypatch code
@@ -907,6 +1096,22 @@ var removeMonkeypatches = function () {
     Monkeypatches.clear();
 };
 // End of Geckolib copy-pasted code
+function getEntityModelName(entityName) {
+    return getClassNameFromEntity(entityName, "Model");
+}
+function getEntityAnimationName(entityName) {
+    return getClassNameFromEntity(entityName, "Animation");
+}
+function getEntityRendererName(entityName) {
+    return getClassNameFromEntity(entityName, "Renderer");
+}
+function getEntityRenderStateName(entityName) {
+    return getClassNameFromEntity(entityName, "RenderState");
+}
+function getClassNameFromEntity(entityName, suffix) {
+    // if(entityName != "") entityName = Project[ENTITY_CLASS_PROPERTY];
+    return entityName + suffix;
+}
 
 
 /***/ }

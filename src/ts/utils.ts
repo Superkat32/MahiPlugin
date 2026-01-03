@@ -24,3 +24,24 @@ export const removeMonkeypatches = () => {
     Monkeypatches.clear();
 }
 // End of Geckolib copy-pasted code
+
+export function getEntityModelName(entityName: string) {
+    return getClassNameFromEntity(entityName, "Model");
+}
+
+export function getEntityAnimationName(entityName: string) {
+    return getClassNameFromEntity(entityName, "Animation");
+}
+
+export function getEntityRendererName(entityName: string) {
+    return getClassNameFromEntity(entityName, "Renderer");
+}
+
+export function getEntityRenderStateName(entityName: string) {
+    return getClassNameFromEntity(entityName, "RenderState");
+}
+
+function getClassNameFromEntity(entityName: string, suffix: string): string {
+    // if(entityName != "") entityName = Project[ENTITY_CLASS_PROPERTY];
+    return entityName + suffix;
+}

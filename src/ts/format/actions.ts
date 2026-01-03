@@ -1,7 +1,11 @@
-import {isFormatMahiEntity, MAHI_CODEC} from "./format";
+import {isFormatMahiEntity} from "./format";
 import {CODEC_NAME} from "../constants";
 import {addMonkeypatch, Monkeypatches, removeMonkeypatches} from "../utils";
 import {openMahiProjectSettingsDialog} from "./properties";
+import {getProjectTemplateSet} from "./templates";
+import {AnimationTemplate} from "./templates/animationTemplates";
+import {getProjectAnimationClass, getProjectRenderStateClass} from "./templates/templateUtils";
+import {RenderStateTemplate} from "./templates/renderStateTemplates";
 
 const exportMahiProject: Action = new Action("export_mahi_project", {
     name: "Export Mahi Entity",
@@ -192,7 +196,7 @@ function exportProject(exportFormResults: any, animationFormResults?: any, anima
         exportRenderer();
     }
     if(exportFormResults.export_renderstate) {
-        exportRenderState();
+        exportRenderState(animationFormResults, animationKeys);
     }
 }
 
@@ -201,14 +205,16 @@ function exportModel(): void {
 }
 
 function exportAnimation(animationFormResult: any, animationKeys: any): void {
-    let keys = animationKeys.filter(key => animationFormResult[key.hashCode()]);
-    let animations = keys.map(k => Animation["all"].find(anim => anim.name == k));
-    let content = MAHI_CODEC.compileAnimations(animations);
+    let animationTemplate: AnimationTemplate = getProjectTemplateSet().animation;
+
+    let keys: any = animationKeys.filter(key => animationFormResult[key.hashCode()]);
+    let animations: any = keys.map(k => Animation["all"].find(anim => anim.name == k));
+    let content: string = animationTemplate.createFileContent(animations);
     Blockbench.export({
         resource_id: "mahi_animations",
         type: "Mahi Modded Entity Animations",
         extensions: ["java"],
-        name: (Project.geometry_name || "model"),
+        name: getProjectAnimationClass(),
         content
     });
 }
@@ -217,6 +223,20 @@ function exportRenderer(): void {
 
 }
 
-function exportRenderState(): void {
+function exportRenderState(animationFormResult?: any, animationKeys?: any): void {
+    let renderStateTemplate: RenderStateTemplate = getProjectTemplateSet().renderState;
 
+    let animations: any = "";
+    if(animationFormResult != undefined && animationKeys != undefined) {
+        let keys: any = animationKeys.filter(key => animationFormResult[key.hashCode()]);
+        animations = keys.map(k => Animation["all"].find(anim => anim.name == k));
+    }
+    let content: string = renderStateTemplate.createFileContent(animations);
+    Blockbench.export({
+        resource_id: "mahi_renderstate",
+        type: "Mahi Modded Render State",
+        extensions: ["java"],
+        name: getProjectRenderStateClass(),
+        content
+    })
 }
