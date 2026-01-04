@@ -86,17 +86,36 @@ var exportMahiAnimations = new Action("export_mahi_animations", {
         openExportProjectSettings(false, true, false, true);
     }
 });
+var buttonOfHope = new Action("button_of_hope", {
+    name: "Button of Hope",
+    icon: "fa-frog",
+    condition: function () { return (0,_format__WEBPACK_IMPORTED_MODULE_0__.isFormatMahiEntity)() && Animator.open && Timeline.selected.length && Timeline.selected.find(function (kf) { return kf.transform; }); },
+    click: function () {
+        Undo.initEdit({ keyframes: Timeline.selected });
+        Timeline.selected.forEach(function (keyframe) {
+            if (keyframe.transform) {
+                keyframe["easing"] = "custom";
+                var element = document.getElementById(keyframe.uuid);
+                if (element && element.children && keyframe["easing"]) {
+                    element.children[0].className = "apparently-you-can-just-change-the-class-name";
+                }
+            }
+        });
+        Undo.finishEdit("Change keyframes interpolation");
+        updateKeyframeSelection();
+    }
+});
 function loadMahiActions() {
     MenuBar.addAction(exportMahiModel, "file.export");
     MenuBar.addAction(exportMahiAnimations, "file.export");
     MenuBar.addAction(exportMahiProject, "file.export");
+    MenuBar.addAction(buttonOfHope, "animation");
     (0,_utils__WEBPACK_IMPORTED_MODULE_2__.addMonkeypatch)(BarItems, "project_window", "click", monkeypatchMahiProjectWindowClick);
 }
 function unloadMahiActions() {
     exportMahiModel.delete();
     exportMahiAnimations.delete();
     exportMahiProject.delete();
-    (0,_utils__WEBPACK_IMPORTED_MODULE_2__.removeMonkeypatches)();
 }
 function monkeypatchMahiProjectWindowClick() {
     if (Format.id === _constants__WEBPACK_IMPORTED_MODULE_1__.CODEC_NAME) {
@@ -271,6 +290,264 @@ function exportRenderState(animationFormResult, animationKeys) {
         name: (0,_templates_templateUtils__WEBPACK_IMPORTED_MODULE_5__.getProjectRenderStateClass)(),
         content: content
     });
+}
+
+
+/***/ },
+
+/***/ "./ts/format/easing/easingTypes.ts"
+/*!*****************************************!*\
+  !*** ./ts/format/easing/easingTypes.ts ***!
+  \*****************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   EASING_TYPES: () => (/* binding */ EASING_TYPES),
+/* harmony export */   FADE_IN_OUT_SVG: () => (/* binding */ FADE_IN_OUT_SVG),
+/* harmony export */   FADE_IN_SVG: () => (/* binding */ FADE_IN_SVG),
+/* harmony export */   FADE_OUT_SVG: () => (/* binding */ FADE_OUT_SVG)
+/* harmony export */ });
+/* harmony import */ var _easings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./easings */ "./ts/format/easing/easings.ts");
+
+// List of all easing types available. Default SVGs copy-pasted from the Geckolib Blockbench Plugin:
+// https://github.com/JannisX11/blockbench-plugins/blob/master/plugins/geckolib/src/ts/animationUi.ts
+var FADE_IN_SVG = "<svg viewBox=\"0 0 6.3499999 6.3500002\" height=\"24\" width=\"24\"><g transform=\"translate(0,-290.64998)\"><path d=\"m 0.52916667,296.47081 c 4.23333333,0 5.29166663,-1.05833 5.29166663,-5.29166\" style=\"fill:none;stroke-width:0.5291667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\"/></g></svg>";
+var FADE_OUT_SVG = "<svg viewBox=\"0 0 6.3499999 6.3500002\" height=\"24\" width=\"24\"><g transform=\"translate(0,-290.64998)\"><path d=\"m 0.52916667,296.47081 c 0,-4.23333 1.05833333,-5.29166 5.29166663,-5.29166\" style=\"fill:none;stroke-width:0.5291667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\"/></g></svg>";
+var FADE_IN_OUT_SVG = "<svg viewBox=\"0 0 6.3499999 6.3500002\" height=\"24\" width=\"24\"><g transform=\"translate(0,-290.64998)\"><path d=\"m 0.52916667,296.47081 c 5.55625003,0 -0.26458334,-5.29166 5.29166663,-5.29166\" style=\"fill:none;stroke-width:0.5291667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\"/></g></svg>";
+var EASING_TYPES = {
+    "linear": {
+        in: function (amount) { return amount; },
+        svg: "<svg viewBox=\"0 0 6.3499999 6.3500002\" height=\"24\" width=\"24\"><g transform=\"translate(0,-290.64998)\"><path d=\"M 0.52916667,296.47081 5.8208333,291.17915\" style=\"fill:none;stroke-width:0.52916667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\"/></g></svg>"
+    },
+    "sine": {
+        in: _easings__WEBPACK_IMPORTED_MODULE_0__.easeInSine,
+        out: _easings__WEBPACK_IMPORTED_MODULE_0__.easeOutSine,
+        inOut: _easings__WEBPACK_IMPORTED_MODULE_0__.easeInOutSine,
+        svg: "<svg width=\"24\" height=\"24\" viewBox=\"0 0 6.3499999 6.3500002\"><g transform=\"translate(0,-290.64998)\"><path d=\"m 0.52916667,296.47081 c 1.32291663,0 4.23333333,-3.43958 5.29166663,-5.29166\" style=\"fill:none;stroke-width:0.5291667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\"/></g></svg>"
+    }
+};
+
+
+/***/ },
+
+/***/ "./ts/format/easing/easings.ts"
+/*!*************************************!*\
+  !*** ./ts/format/easing/easings.ts ***!
+  \*************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   easeInOutSine: () => (/* binding */ easeInOutSine),
+/* harmony export */   easeInSine: () => (/* binding */ easeInSine),
+/* harmony export */   easeOutSine: () => (/* binding */ easeOutSine),
+/* harmony export */   lerp: () => (/* binding */ lerp)
+/* harmony export */ });
+// Util file with all the easings from https://easings.net/
+function lerp(start, end, amount) {
+    return amount * (end - start) + start;
+}
+// Sine
+function easeInSine(amount) {
+    return 1 - Math.cos(amount * (Math.PI / 2));
+}
+function easeOutSine(amount) {
+    return Math.sin((amount * Math.PI) / 2);
+}
+function easeInOutSine(amount) {
+    return -(Math.cos(Math.PI * amount) - 1) / 2;
+}
+
+
+/***/ },
+
+/***/ "./ts/format/easing/keyframe.ts"
+/*!**************************************!*\
+  !*** ./ts/format/easing/keyframe.ts ***!
+  \**************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   loadMahiKeyframeEasings: () => (/* binding */ loadMahiKeyframeEasings),
+/* harmony export */   unloadMahiKeyframeEasings: () => (/* binding */ unloadMahiKeyframeEasings)
+/* harmony export */ });
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../utils */ "./ts/utils.ts");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../constants */ "./ts/constants.ts");
+/* harmony import */ var _easings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./easings */ "./ts/format/easing/easings.ts");
+/* harmony import */ var _easingTypes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./easingTypes */ "./ts/format/easing/easingTypes.ts");
+
+
+
+
+/*
+File which handles all the custom easing stuff on keyframes.
+This has been designed to be easily copy-pasted into other plugins,
+as long as you have the easings.ts & easingTypes.ts files, and an addMonkeypatch function (see utils.ts).
+
+I've left some comments to try to make sense of what on earth is happening in this abomination
+^ used to Java mixins lol
+
+This heavily based on the Geckolib Blockbench Plugin's custom easing:
+https://github.com/JannisX11/blockbench-plugins/blob/master/plugins/geckolib/src/ts/keyframe.ts
+https://github.com/JannisX11/blockbench-plugins/blob/master/plugins/geckolib/src/ts/animationUi.ts
+Some user-facing things like icons and button placements have been intentionally kept the same for consistency
+(Also Geckolib just does it really well imo)
+ */
+var BAR_MENU_IDS = new Set();
+function loadMahiKeyframeEasings() {
+    // Listen to Blockbench events for various activities
+    Blockbench.on("update_keyframe_selection", createEasingMenu);
+    // Monkeypatch custom easing function which handles a keyframe's "easing" property
+    // @ts-ignore
+    (0,_utils__WEBPACK_IMPORTED_MODULE_0__.addMonkeypatch)(Keyframe, "prototype", "getLerp", monkeypatchMahiKeyframeLerping);
+}
+function unloadMahiKeyframeEasings() {
+    // Remove our listened events
+    Blockbench.removeListener("update_keyframe_selection", createEasingMenu);
+    // Monkeypatches are automatically removed in the index.ts unload function
+}
+var createEasingMenu = function () {
+    if (!applyToProject())
+        return; // Don't apply to projects this shouldn't be applied too
+    if (!document.getElementById("panel_keyframe"))
+        return; // Don't apply if no keyframe panel
+    // Remove all added menus to prevent duplication - if they should still be visible, they'll be recreated here
+    BAR_MENU_IDS.forEach(function (barId) {
+        $("#".concat(barId)).remove(); // Prevent added inputs from duplicating somehow
+    });
+    var easingBar = createAndAppendKeyframeBar("easing");
+    // Add all easing types to the easing bar
+    for (var easingKey in _easingTypes__WEBPACK_IMPORTED_MODULE_3__.EASING_TYPES) {
+        var easingType = _easingTypes__WEBPACK_IMPORTED_MODULE_3__.EASING_TYPES[easingKey];
+        addEasingTypeButton(easingBar, easingKey, easingType);
+    }
+    var selectedEasingKey = getSelectedKeyframesEasingKey();
+    // Highlight the selected easing type by making its color the accent color (blue by default)
+    var selectedEasingElement = document.getElementById("kf_easing_type_" + selectedEasingKey);
+    selectedEasingElement.style.stroke = "var(--color-accent)";
+    selectedEasingElement.classList.add("selected_kf_easing");
+    if (selectedEasingKey !== "linear") {
+        // Change the interpolation dropdown text content to say "Custom (Mahi)"
+        document.getElementById("panel_keyframe").querySelector("div.bb-select").textContent = "Custom (Mahi)";
+    }
+    // Add the fade types to the easing bar based on the currently selected easing type
+    if (selectedEasingKey !== null && _easingTypes__WEBPACK_IMPORTED_MODULE_3__.EASING_TYPES[selectedEasingKey]) {
+        var easingType = _easingTypes__WEBPACK_IMPORTED_MODULE_3__.EASING_TYPES[selectedEasingKey];
+        // EasingTypes always have an "in" function, but may not have an "out" or "inOut" function
+        // If they have either an "out" or "inOut", display both that one and the "in" as an option
+        if (easingType.out || easingType.inOut) {
+            var fadeBar = createAndAppendKeyframeBar("easing_fade", "Fade");
+            addFadeTypeButton(fadeBar, "in", "In", _easingTypes__WEBPACK_IMPORTED_MODULE_3__.FADE_IN_SVG);
+            if (easingType.out)
+                addFadeTypeButton(fadeBar, "out", "Out", _easingTypes__WEBPACK_IMPORTED_MODULE_3__.FADE_OUT_SVG);
+            if (easingType.inOut)
+                addFadeTypeButton(fadeBar, "inout", "In & Out", _easingTypes__WEBPACK_IMPORTED_MODULE_3__.FADE_IN_OUT_SVG);
+            var selectedFadeKey = getSelectedKeyframesFadeKey();
+            var selectedFadeElement = document.getElementById("kf_fade_type_" + selectedFadeKey);
+            selectedFadeElement.style.stroke = "var(--color-accent)";
+            selectedFadeElement.classList.add("selected_kf_fade");
+        }
+    }
+};
+// Adds an element to the easing bar which has an SVG icon and sets the easing type of all selected keyframes on click
+function addEasingTypeButton(easingBar, easingId, easingType) {
+    // const div: HTMLDivElement = document.createElement("div");
+    // div.innerHTML = easingType.svg;
+    // div.id = "kf_easing_type_" + easingId;
+    // div.setAttribute("style", "stroke:var(--color-text); margin:0px; padding:3px; width:30px; height: 30px");
+    // div.setAttribute("title", `Switch to ${capitalize(easingId)} easing`);
+    var div = createButtonElement("kf_easing_type_".concat(easingId), "Switch to ".concat((0,_utils__WEBPACK_IMPORTED_MODULE_0__.capitalize)(easingId), " easing"), easingType.svg);
+    div.onclick = function () {
+        // Start the undo-able edit, adding all the currently selected keyframes
+        Undo.initEdit({ keyframes: Timeline.selected });
+        for (var keyframe in Timeline.selected) {
+            Timeline.selected[keyframe]["easing"] = easingId;
+        }
+        // Ensure the changes are visible
+        window.updateKeyframeSelection();
+        // End undo-able edit
+        Undo.finishEdit("Edit keyframe easing");
+    };
+    easingBar.appendChild(div);
+}
+function addFadeTypeButton(fadeBar, fadeId, fadeName, svg) {
+    var div = createButtonElement("kf_fade_type_".concat(fadeId), "Fade ".concat(fadeName, " easing"), svg);
+    div.onclick = function () {
+        for (var keyframe in Timeline.selected) {
+            Timeline.selected[keyframe]["easing_fade"] = fadeId;
+        }
+        window.updateKeyframeSelection();
+    };
+    fadeBar.appendChild(div);
+}
+function createAndAppendKeyframeBar(id, name) {
+    if (name === void 0) { name = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.capitalize)(id); }
+    var barId = "keyframe_bar_".concat(id);
+    // Keep track of all created bar menu ids so they can be removed before creating them again
+    // I opted to keep track of them instead of removing them before creating them again
+    // because menus may need to be removed without being recreated(e.g. remove fade menu without having fade options)
+    BAR_MENU_IDS.add(barId);
+    var keyframePanel = document.getElementById("panel_keyframe");
+    var bar = document.createElement("div");
+    keyframePanel.appendChild(bar);
+    bar.outerHTML =
+        "<div class=\"bar flex\" style=\"flex-wrap: wrap\" id=".concat(barId, ">\n            <label class=\"tl\" style=\"font-weight: bolder; min-width: 47px;\">").concat(name, "</label>\n        </div>");
+    return document.getElementById(barId);
+}
+function createButtonElement(id, title, innerHTML) {
+    var div = document.createElement("div");
+    div.id = id;
+    div.innerHTML = innerHTML;
+    div.setAttribute("style", "stroke:var(--color-text); margin:0px; padding:3px; width:30px; height:30px");
+    div.setAttribute("title", title);
+    return div;
+}
+function getSelectedKeyframesEasingKey() {
+    return getSelectedKeyframesProperty("easing", "linear");
+}
+function getSelectedKeyframesFadeKey() {
+    return getSelectedKeyframesProperty("easing_fade", "in");
+}
+function getSelectedKeyframesProperty(property, defaultValue, conflictValue) {
+    if (conflictValue === void 0) { conflictValue = null; }
+    var selectorFunction = function (keyframe) { return (keyframe[property] === undefined ? defaultValue : keyframe[property]); };
+    if (Timeline.selected.length > 1) {
+        // Check if all selected keyframes have the same value as the last selected keyframe
+        var lastValue = selectorFunction(Timeline.selected[Timeline.selected.length - 1]);
+        for (var keyframe in Timeline.selected) {
+            var keyframeValue = selectorFunction(Timeline.selected[keyframe]);
+            if (lastValue !== keyframeValue) {
+                return conflictValue;
+            }
+        }
+        return lastValue;
+    }
+    else {
+        // Return either the only selected keyframes' value, or just the default value if none are selected
+        if (Timeline.selected[0])
+            return selectorFunction(Timeline.selected[0]);
+        return defaultValue;
+    }
+}
+function monkeypatchMahiKeyframeLerping(other, axis, amount, allow_expression) {
+    if (!applyToProject()) { // Don't apply custom easings if the project is not a Mahi Entity project
+        // @ts-ignore
+        return _utils__WEBPACK_IMPORTED_MODULE_0__.Monkeypatches.get(Keyframe).getLerp.apply(this, arguments); // Return original getLerp function
+    }
+    var easing = other["easing"] || "defaultEasing";
+    var easeAmount = (0,_easings__WEBPACK_IMPORTED_MODULE_2__.easeInSine)(amount);
+    var start = this.data_points.length == 1 ? this.calc(axis) : this.calc(axis, 1);
+    var end = other.calc(axis);
+    var result = (0,_easings__WEBPACK_IMPORTED_MODULE_2__.lerp)(start, end, easeAmount);
+    if (!Number.isNaN(result)) {
+        return result;
+    }
+    return 0;
+}
+function applyToProject() {
+    return Format.id === _constants__WEBPACK_IMPORTED_MODULE_1__.CODEC_NAME; // Codec name from my constants.ts file
 }
 
 
@@ -724,7 +1001,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var CLASS_COMMENT_INFO = "/**\n * Made with Blockbench %(bb_version) and Mahi %(mahi_version).\n * Exported for Minecraft %(mc_version) or later.<br><br>\n * Copy this file into your mod and generate all the required imports.\n * @author %(author)\n */";
+var CLASS_COMMENT_INFO = "/**\n * Made with Blockbench %(bb_version) and Mahi %(mahi_version).\n * Exported for Minecraft %(mc_version) or later.\n * <br><br>Copy this file into your mod and generate all the required imports.\n * @author %(author)\n */";
 var TEMPLATES = {
     "1.21.11-mojmaps": {
         name: "Fabric 1.21.11 (Mojmaps)",
@@ -879,6 +1156,7 @@ var ANIMATION_TEMPLATE_1_21_11 = new AnimationTemplate({
     easingTypes: {
         linear: "AnimationChannel.Interpolations.LINEAR",
         catmullrom: "AnimationChannel.Interpolations.CATMULLROM",
+        custom: "YAY"
     }
 });
 var ANIMATION_TEMPLATE_26_1_SNAPSHOT_1 = new AnimationTemplate(__assign(__assign({}, ANIMATION_TEMPLATE_1_21_11.config), { looping: ".loop()" }));
@@ -1069,6 +1347,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Monkeypatches: () => (/* binding */ Monkeypatches),
 /* harmony export */   addMonkeypatch: () => (/* binding */ addMonkeypatch),
+/* harmony export */   capitalize: () => (/* binding */ capitalize),
 /* harmony export */   getEntityAnimationName: () => (/* binding */ getEntityAnimationName),
 /* harmony export */   getEntityModelName: () => (/* binding */ getEntityModelName),
 /* harmony export */   getEntityRenderStateName: () => (/* binding */ getEntityRenderStateName),
@@ -1111,6 +1390,9 @@ function getEntityRenderStateName(entityName) {
 function getClassNameFromEntity(entityName, suffix) {
     // if(entityName != "") entityName = Project[ENTITY_CLASS_PROPERTY];
     return entityName + suffix;
+}
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 
@@ -1188,6 +1470,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ "./ts/constants.ts");
 /* harmony import */ var _format_actions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./format/actions */ "./ts/format/actions.ts");
 /* harmony import */ var _format_properties__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./format/properties */ "./ts/format/properties.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./ts/utils.ts");
+/* harmony import */ var _format_easing_keyframe__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./format/easing/keyframe */ "./ts/format/easing/keyframe.ts");
+
+
 
 
 
@@ -1204,10 +1490,13 @@ __webpack_require__.r(__webpack_exports__);
         onload: function () {
             (0,_format_properties__WEBPACK_IMPORTED_MODULE_2__.loadMahiProperties)();
             (0,_format_actions__WEBPACK_IMPORTED_MODULE_1__.loadMahiActions)();
+            (0,_format_easing_keyframe__WEBPACK_IMPORTED_MODULE_4__.loadMahiKeyframeEasings)();
         },
         onunload: function () {
             (0,_format_properties__WEBPACK_IMPORTED_MODULE_2__.unloadMahiProperties)();
             (0,_format_actions__WEBPACK_IMPORTED_MODULE_1__.unloadMahiActions)();
+            (0,_format_easing_keyframe__WEBPACK_IMPORTED_MODULE_4__.unloadMahiKeyframeEasings)();
+            (0,_utils__WEBPACK_IMPORTED_MODULE_3__.removeMonkeypatches)();
         }
     });
 })();

@@ -1,6 +1,6 @@
 import {isFormatMahiEntity} from "./format";
 import {CODEC_NAME} from "../constants";
-import {addMonkeypatch, Monkeypatches, removeMonkeypatches} from "../utils";
+import {addMonkeypatch, Monkeypatches} from "../utils";
 import {openMahiProjectSettingsDialog} from "./properties";
 import {getProjectTemplateSet} from "./templates";
 import {AnimationTemplate} from "./templates/animationTemplates";
@@ -34,10 +34,33 @@ const exportMahiAnimations: Action = new Action("export_mahi_animations", {
     }
 })
 
+const buttonOfHope: Action = new Action("button_of_hope", {
+    name: "Button of Hope",
+    icon: "fa-frog",
+    condition: () => isFormatMahiEntity() && Animator.open && Timeline.selected.length && Timeline.selected.find(kf => kf.transform),
+    click: function() {
+        Undo.initEdit({keyframes: Timeline.selected});
+        Timeline.selected.forEach((keyframe) => {
+            if(keyframe.transform) {
+                keyframe["easing"] = "custom";
+
+                const element = document.getElementById(keyframe.uuid);
+                if(element && element.children && keyframe["easing"]) {
+                    element.children[0].className = "apparently-you-can-just-change-the-class-name";
+                }
+            }
+        })
+        Undo.finishEdit("Change keyframes interpolation");
+        updateKeyframeSelection();
+    }
+})
+
 export function loadMahiActions(): void {
     MenuBar.addAction(exportMahiModel, "file.export");
     MenuBar.addAction(exportMahiAnimations, "file.export");
     MenuBar.addAction(exportMahiProject, "file.export");
+
+    MenuBar.addAction(buttonOfHope, "animation");
 
     addMonkeypatch(BarItems, "project_window", "click", monkeypatchMahiProjectWindowClick);
 }
@@ -46,8 +69,6 @@ export function unloadMahiActions(): void {
     exportMahiModel.delete();
     exportMahiAnimations.delete();
     exportMahiProject.delete();
-
-    removeMonkeypatches()
 }
 
 function monkeypatchMahiProjectWindowClick() {

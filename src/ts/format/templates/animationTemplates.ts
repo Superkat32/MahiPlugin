@@ -25,6 +25,7 @@ interface KeyframeTypes {
 interface EasingTypes {
     linear: string
     catmullrom: string
+    custom: string
 }
 
 export class AnimationTemplate {
@@ -127,6 +128,7 @@ public class %(animation_class) {
     easingTypes: {
         linear: "AnimationChannel.Interpolations.LINEAR",
         catmullrom: "AnimationChannel.Interpolations.CATMULLROM",
+        custom: "YAY"
     }
 })
 

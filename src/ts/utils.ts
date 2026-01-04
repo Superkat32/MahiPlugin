@@ -45,3 +45,7 @@ function getClassNameFromEntity(entityName: string, suffix: string): string {
     // if(entityName != "") entityName = Project[ENTITY_CLASS_PROPERTY];
     return entityName + suffix;
 }
+
+export function capitalize(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
