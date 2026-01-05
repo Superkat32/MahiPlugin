@@ -69,6 +69,7 @@ export function unloadMahiActions(): void {
     exportMahiModel.delete();
     exportMahiAnimations.delete();
     exportMahiProject.delete();
+    buttonOfHope.delete();
 }
 
 function monkeypatchMahiProjectWindowClick() {

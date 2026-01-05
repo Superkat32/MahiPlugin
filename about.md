@@ -14,7 +14,11 @@ For the most part, I'm simply working on this for the fun of it. There's no guar
 ## Setting up a new plugin
 ### For future self probably:
 
-- ```cd src```
-- ```npm i --save-dev blockbench-types```
-- ```npm install webpack-cli --save-dev```
-- ```npm install --save-dev typescript ts-loader```
+- ```cd src``` Enter src folder
+- ```npm i --save-dev blockbench-types``` Install Blockbench autocomplete
+- ```npm install --save-dev typescript ts-loader``` Install TypeScript
+- ```npm install webpack-cli --save-dev``` Install Webpack
+
+If using custom CSS:
+- ```npm install --save-dev css-loader``` Install (Webpack?) CSS Loader 
+- ```npm install --save-dev to-string-loader``` Install (Webpack?) To String Loader (for CSS) 

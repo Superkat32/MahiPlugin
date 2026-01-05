@@ -18,11 +18,26 @@ Some user-facing things like icons and button placements have been intentionally
 (Also Geckolib just does it really well imo)
  */
 
+// Replace this with a special identifier - used to remove the buttons/bars without messing up other project types.
+const keyframeProjectId: string = "mahi";
+
+// Replace the CODEC_NAME with your plugin's format id.
+function applyToProject(): boolean {
+    return Format.id === CODEC_NAME; // Codec name from my constants.ts file
+}
+
+// Change the file path here as needed (`../` is go backwards a folder)
+const EASING_CSS = require("../../../resources/easing_keyframes.css").toString();
+
 const BAR_MENU_IDS: Set<string> = new Set();
 
 export function loadMahiKeyframeEasings(): void {
+    // Add our custom keyframe easing CSS for the keyframe icons
+    Blockbench.addCSS(EASING_CSS);
+
     // Listen to Blockbench events for various activities
     Blockbench.on("update_keyframe_selection", createEasingMenu);
+    Blockbench.on("render_frame", renderCustomKeyframeIcons);
 
     // Monkeypatch custom easing function which handles a keyframe's "easing" property
     // @ts-ignore
@@ -32,18 +47,20 @@ export function loadMahiKeyframeEasings(): void {
 export function unloadMahiKeyframeEasings(): void {
     // Remove our listened events
     Blockbench.removeListener("update_keyframe_selection", createEasingMenu);
-
+    Blockbench.removeListener("render_frame", renderCustomKeyframeIcons);
     // Monkeypatches are automatically removed in the index.ts unload function
 }
 
 const createEasingMenu = () => {
-    if(!applyToProject()) return; // Don't apply to projects this shouldn't be applied too
-    if(!document.getElementById("panel_keyframe")) return; // Don't apply if no keyframe panel
-
     // Remove all added menus to prevent duplication - if they should still be visible, they'll be recreated here
+    // Needs to be removed regardless of if custom easings should apply to this project in case of project tab switch
     BAR_MENU_IDS.forEach((barId) => {
         $(`#${barId}`).remove(); // Prevent added inputs from duplicating somehow
     })
+
+    if(!applyToProject()) return; // Don't apply to projects this shouldn't be applied too
+    if(!document.getElementById("panel_keyframe")) return; // Don't apply if no keyframe panel
+
 
     // List of all available easing types
     let easingBar: HTMLElement = createAndAppendKeyframeBar("easing");
@@ -93,15 +110,10 @@ const createEasingMenu = () => {
 
 // Adds an element to the easing bar which has an SVG icon and sets the easing type of all selected keyframes on click
 function addEasingTypeButton(easingBar: HTMLElement, easingId: string, easingType: EasingType): void {
-    // const div: HTMLDivElement = document.createElement("div");
-    // div.innerHTML = easingType.svg;
-    // div.id = "kf_easing_type_" + easingId;
-    // div.setAttribute("style", "stroke:var(--color-text); margin:0px; padding:3px; width:30px; height: 30px");
-    // div.setAttribute("title", `Switch to ${capitalize(easingId)} easing`);
     const div: HTMLElement = createButtonElement(
         `kf_easing_type_${easingId}`,
         `Switch to ${capitalize(easingId)} easing`,
-        easingType.svg
+        easingType.selectSvg
     );
 
     div.onclick = function () {
@@ -136,7 +148,7 @@ function addFadeTypeButton(fadeBar: HTMLElement, fadeId: string, fadeName: strin
 }
 
 function createAndAppendKeyframeBar(id: string, name: string = capitalize(id)): HTMLElement {
-    let barId = `keyframe_bar_${id}`;
+    let barId = `${keyframeProjectId}_keyframe_bar_${id}`;
 
     // Keep track of all created bar menu ids so they can be removed before creating them again
     // I opted to keep track of them instead of removing them before creating them again
@@ -163,6 +175,36 @@ function createButtonElement(id: string, title: string, innerHTML: string): HTML
    div.setAttribute("style", "stroke:var(--color-text); margin:0px; padding:3px; width:30px; height:30px");
    div.setAttribute("title", title);
    return div;
+}
+
+function renderCustomKeyframeIcons() {
+    if(!applyToProject()) return;
+
+    Timeline.keyframes.forEach(keyframe => {
+        updateKeyframeIcon(keyframe);
+    })
+}
+
+function updateKeyframeIcon(keyframe: _Keyframe) {
+    const element = document.getElementById(keyframe.uuid);
+
+    if(element && element.children && keyframe["easing"]) {
+        let easingKey: string = keyframe["easing"];
+        let easingType: EasingType = EASING_TYPES[easingKey];
+
+        if(!easingType.keyframeBackground) return;
+
+        let fadeType: string = keyframe["easing_fade"];
+
+        let keyframeBackground: string = easingType.keyframeBackground.inOutIcon; // if no fade type or fade type is "inout"
+        if (fadeType == "in" && easingType.keyframeBackground.inIcon) {
+            keyframeBackground = easingType.keyframeBackground.inIcon;
+        } else if (fadeType == "out" && easingType.keyframeBackground.outIcon) {
+            keyframeBackground = easingType.keyframeBackground.outIcon;
+        }
+
+        element.children[0].className = keyframeBackground;
+    }
 }
 
 function getSelectedKeyframesEasingKey(): string {
@@ -209,8 +251,4 @@ function monkeypatchMahiKeyframeLerping(other, axis, amount, allow_expression) {
         return result;
     }
     return 0;
-}
-
-function applyToProject(): boolean {
-    return Format.id === CODEC_NAME; // Codec name from my constants.ts file
 }

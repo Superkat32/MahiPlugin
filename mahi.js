@@ -1,6 +1,272 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./resources/easing_keyframes.css"
+/*!******************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./resources/easing_keyframes.css ***!
+  \******************************************************************************/
+(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/noSourceMaps.js */ "./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/getUrl.js */ "./node_modules/css-loader/dist/runtime/getUrl.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2__);
+// Imports
+
+
+
+var ___CSS_LOADER_URL_IMPORT_0___ = new URL(/* asset import */ __webpack_require__(/*! data:font/woff;base64,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 */ "data:font/woff;base64,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"), __webpack_require__.b);
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+var ___CSS_LOADER_URL_REPLACEMENT_0___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default()(___CSS_LOADER_URL_IMPORT_0___);
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `/*
+Font generated with Icomoon, with my own icons.
+Blockbench can't load custom fonts, so you'll need to encode the woff/woff2 file with base64,
+and input the encoded string in the \`src: url("data:font/woff;base64,<encoded string here>") format("woff");\` line
+
+I did use my custom icons instead of Geckolib's for this simply to learn how to do so.
+I think they're worse than Geckolib's (not nearly as smooth), but I'm keeping them for now
+*/
+
+@font-face {
+    font-family: 'keyframe-easing-icomoon';
+    font-weight: normal;
+    font-style: normal;
+    src: url(${___CSS_LOADER_URL_REPLACEMENT_0___}) format("woff");
+}
+
+[class^="ease-"]:not(.fa), [class*=" ease-"]:not(.fa) {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    /*noinspection CssNoGenericFontName*/
+    font-family: 'keyframe-easing-icomoon' !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 0.7;
+    font-size: 1.2em;
+    max-width: 24px;
+
+    /*Ensure my icons are centered with keyframe time code*/
+    margin-left: -3px;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.ease-keyframe-bounce-in:before {
+     content: "\\e900";
+ }
+.ease-keyframe-bounce-inout:before {
+    content: "\\e901";
+}
+.ease-keyframe-bounce-out:before {
+    content: "\\e902";
+}
+.ease-keyframe-elastic-in:before {
+    content: "\\e903";
+}
+.ease-keyframe-elastic-inout:before {
+    content: "\\e904";
+}
+.ease-keyframe-elastic-out:before {
+    content: "\\e905";
+}
+.ease-keyframe-linear:before {
+    content: "\\e906";
+}
+.ease-keyframe-smooth-in:before {
+    content: "\\e907";
+}
+.ease-keyframe-smooth-inout:before {
+    content: "\\e908";
+}
+.ease-keyframe-smooth-out:before {
+    content: "\\e909";
+}
+.ease-keyframe-step:before {
+    content: "\\e90a";
+}`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ },
+
+/***/ "./node_modules/css-loader/dist/runtime/api.js"
+/*!*****************************************************!*\
+  !*** ./node_modules/css-loader/dist/runtime/api.js ***!
+  \*****************************************************/
+(module) {
+
+"use strict";
+
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+*/
+module.exports = function (cssWithMappingToString) {
+  var list = [];
+
+  // return the list of modules as css string
+  list.toString = function toString() {
+    return this.map(function (item) {
+      var content = "";
+      var needLayer = typeof item[5] !== "undefined";
+      if (item[4]) {
+        content += "@supports (".concat(item[4], ") {");
+      }
+      if (item[2]) {
+        content += "@media ".concat(item[2], " {");
+      }
+      if (needLayer) {
+        content += "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {");
+      }
+      content += cssWithMappingToString(item);
+      if (needLayer) {
+        content += "}";
+      }
+      if (item[2]) {
+        content += "}";
+      }
+      if (item[4]) {
+        content += "}";
+      }
+      return content;
+    }).join("");
+  };
+
+  // import a list of modules into the list
+  list.i = function i(modules, media, dedupe, supports, layer) {
+    if (typeof modules === "string") {
+      modules = [[null, modules, undefined]];
+    }
+    var alreadyImportedModules = {};
+    if (dedupe) {
+      for (var k = 0; k < this.length; k++) {
+        var id = this[k][0];
+        if (id != null) {
+          alreadyImportedModules[id] = true;
+        }
+      }
+    }
+    for (var _k = 0; _k < modules.length; _k++) {
+      var item = [].concat(modules[_k]);
+      if (dedupe && alreadyImportedModules[item[0]]) {
+        continue;
+      }
+      if (typeof layer !== "undefined") {
+        if (typeof item[5] === "undefined") {
+          item[5] = layer;
+        } else {
+          item[1] = "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {").concat(item[1], "}");
+          item[5] = layer;
+        }
+      }
+      if (media) {
+        if (!item[2]) {
+          item[2] = media;
+        } else {
+          item[1] = "@media ".concat(item[2], " {").concat(item[1], "}");
+          item[2] = media;
+        }
+      }
+      if (supports) {
+        if (!item[4]) {
+          item[4] = "".concat(supports);
+        } else {
+          item[1] = "@supports (".concat(item[4], ") {").concat(item[1], "}");
+          item[4] = supports;
+        }
+      }
+      list.push(item);
+    }
+  };
+  return list;
+};
+
+/***/ },
+
+/***/ "./node_modules/css-loader/dist/runtime/getUrl.js"
+/*!********************************************************!*\
+  !*** ./node_modules/css-loader/dist/runtime/getUrl.js ***!
+  \********************************************************/
+(module) {
+
+"use strict";
+
+
+module.exports = function (url, options) {
+  if (!options) {
+    options = {};
+  }
+  if (!url) {
+    return url;
+  }
+  url = String(url.__esModule ? url.default : url);
+
+  // If url is already wrapped in quotes, remove them
+  if (/^['"].*['"]$/.test(url)) {
+    url = url.slice(1, -1);
+  }
+  if (options.hash) {
+    url += options.hash;
+  }
+
+  // Should url be wrapped?
+  // See https://drafts.csswg.org/css-values-3/#urls
+  if (/["'() \t\n]|(%20)/.test(url) || options.needQuotes) {
+    return "\"".concat(url.replace(/"/g, '\\"').replace(/\n/g, "\\n"), "\"");
+  }
+  return url;
+};
+
+/***/ },
+
+/***/ "./node_modules/css-loader/dist/runtime/noSourceMaps.js"
+/*!**************************************************************!*\
+  !*** ./node_modules/css-loader/dist/runtime/noSourceMaps.js ***!
+  \**************************************************************/
+(module) {
+
+"use strict";
+
+
+module.exports = function (i) {
+  return i[1];
+};
+
+/***/ },
+
+/***/ "./resources/easing_keyframes.css"
+/*!****************************************!*\
+  !*** ./resources/easing_keyframes.css ***!
+  \****************************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+
+        var result = __webpack_require__(/*! !!../node_modules/css-loader/dist/cjs.js!./easing_keyframes.css */ "./node_modules/css-loader/dist/cjs.js!./resources/easing_keyframes.css");
+
+        if (result && result.__esModule) {
+            result = result.default;
+        }
+
+        if (typeof result === "string") {
+            module.exports = result;
+        } else {
+            module.exports = result.toString();
+        }
+    
+
+/***/ },
 
 /***/ "./ts/constants.ts"
 /*!*************************!*\
@@ -8,6 +274,7 @@
   \*************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   CODEC_NAME: () => (/* binding */ CODEC_NAME),
@@ -45,6 +312,7 @@ var FANCY_VANILLA_ENTITIES = [
   \******************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   loadMahiActions: () => (/* binding */ loadMahiActions),
@@ -116,6 +384,7 @@ function unloadMahiActions() {
     exportMahiModel.delete();
     exportMahiAnimations.delete();
     exportMahiProject.delete();
+    buttonOfHope.delete();
 }
 function monkeypatchMahiProjectWindowClick() {
     if (Format.id === _constants__WEBPACK_IMPORTED_MODULE_1__.CODEC_NAME) {
@@ -301,30 +570,59 @@ function exportRenderState(animationFormResult, animationKeys) {
   \*****************************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   EASING_TYPES: () => (/* binding */ EASING_TYPES),
 /* harmony export */   FADE_IN_OUT_SVG: () => (/* binding */ FADE_IN_OUT_SVG),
 /* harmony export */   FADE_IN_SVG: () => (/* binding */ FADE_IN_SVG),
-/* harmony export */   FADE_OUT_SVG: () => (/* binding */ FADE_OUT_SVG)
+/* harmony export */   FADE_OUT_SVG: () => (/* binding */ FADE_OUT_SVG),
+/* harmony export */   KEYFRAME_BACKGROUNDS: () => (/* binding */ KEYFRAME_BACKGROUNDS)
 /* harmony export */ });
 /* harmony import */ var _easings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./easings */ "./ts/format/easing/easings.ts");
 
-// List of all easing types available. Default SVGs copy-pasted from the Geckolib Blockbench Plugin:
+// List of all easing types available. Select icon SVGs copy-pasted from the Geckolib Blockbench Plugin:
 // https://github.com/JannisX11/blockbench-plugins/blob/master/plugins/geckolib/src/ts/animationUi.ts
 var FADE_IN_SVG = "<svg viewBox=\"0 0 6.3499999 6.3500002\" height=\"24\" width=\"24\"><g transform=\"translate(0,-290.64998)\"><path d=\"m 0.52916667,296.47081 c 4.23333333,0 5.29166663,-1.05833 5.29166663,-5.29166\" style=\"fill:none;stroke-width:0.5291667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\"/></g></svg>";
 var FADE_OUT_SVG = "<svg viewBox=\"0 0 6.3499999 6.3500002\" height=\"24\" width=\"24\"><g transform=\"translate(0,-290.64998)\"><path d=\"m 0.52916667,296.47081 c 0,-4.23333 1.05833333,-5.29166 5.29166663,-5.29166\" style=\"fill:none;stroke-width:0.5291667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\"/></g></svg>";
 var FADE_IN_OUT_SVG = "<svg viewBox=\"0 0 6.3499999 6.3500002\" height=\"24\" width=\"24\"><g transform=\"translate(0,-290.64998)\"><path d=\"m 0.52916667,296.47081 c 5.55625003,0 -0.26458334,-5.29166 5.29166663,-5.29166\" style=\"fill:none;stroke-width:0.5291667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\"/></g></svg>";
+// See easing_keyframes.css
+var KEYFRAME_BACKGROUNDS = {
+    "linear": {
+        inOutIcon: "ease-keyframe-linear"
+    },
+    "step": {
+        inOutIcon: "ease-keyframe-step"
+    },
+    "smooth": {
+        inIcon: "ease-keyframe-smooth-in",
+        outIcon: "ease-keyframe-smooth-out",
+        inOutIcon: "ease-keyframe-smooth-inout"
+    },
+    "bounce": {
+        inIcon: "ease-keyframe-bounce-in",
+        outIcon: "ease-keyframe-bounce-out",
+        inOutIcon: "ease-keyframe-bounce-inout"
+    },
+    "elastic": {
+        inIcon: "ease-keyframe-elastic-in",
+        outIcon: "ease-keyframe-elastic-out",
+        inOutIcon: "ease-keyframe-elastic-inout"
+    }
+};
 var EASING_TYPES = {
     "linear": {
         in: function (amount) { return amount; },
-        svg: "<svg viewBox=\"0 0 6.3499999 6.3500002\" height=\"24\" width=\"24\"><g transform=\"translate(0,-290.64998)\"><path d=\"M 0.52916667,296.47081 5.8208333,291.17915\" style=\"fill:none;stroke-width:0.52916667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\"/></g></svg>"
+        selectSvg: "<svg viewBox=\"0 0 6.3499999 6.3500002\" height=\"24\" width=\"24\"><g transform=\"translate(0,-290.64998)\"><path d=\"M 0.52916667,296.47081 5.8208333,291.17915\" style=\"fill:none;stroke-width:0.52916667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\"/></g></svg>",
+        keyframeBackground: KEYFRAME_BACKGROUNDS["linear"]
     },
     "sine": {
         in: _easings__WEBPACK_IMPORTED_MODULE_0__.easeInSine,
         out: _easings__WEBPACK_IMPORTED_MODULE_0__.easeOutSine,
         inOut: _easings__WEBPACK_IMPORTED_MODULE_0__.easeInOutSine,
-        svg: "<svg width=\"24\" height=\"24\" viewBox=\"0 0 6.3499999 6.3500002\"><g transform=\"translate(0,-290.64998)\"><path d=\"m 0.52916667,296.47081 c 1.32291663,0 4.23333333,-3.43958 5.29166663,-5.29166\" style=\"fill:none;stroke-width:0.5291667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\"/></g></svg>"
+        selectSvg: "<svg width=\"24\" height=\"24\" viewBox=\"0 0 6.3499999 6.3500002\"><g transform=\"translate(0,-290.64998)\"><path d=\"m 0.52916667,296.47081 c 1.32291663,0 4.23333333,-3.43958 5.29166663,-5.29166\" style=\"fill:none;stroke-width:0.5291667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\"/></g></svg>",
+        keyframeIcon: "fa-fish",
+        keyframeBackground: KEYFRAME_BACKGROUNDS["smooth"]
     }
 };
 
@@ -337,6 +635,7 @@ var EASING_TYPES = {
   \*************************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   easeInOutSine: () => (/* binding */ easeInOutSine),
@@ -368,6 +667,7 @@ function easeInOutSine(amount) {
   \**************************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   loadMahiKeyframeEasings: () => (/* binding */ loadMahiKeyframeEasings),
@@ -395,10 +695,21 @@ https://github.com/JannisX11/blockbench-plugins/blob/master/plugins/geckolib/src
 Some user-facing things like icons and button placements have been intentionally kept the same for consistency
 (Also Geckolib just does it really well imo)
  */
+// Replace this with a special identifier - used to remove the buttons/bars without messing up other project types.
+var keyframeProjectId = "mahi";
+// Replace the CODEC_NAME with your plugin's format id.
+function applyToProject() {
+    return Format.id === _constants__WEBPACK_IMPORTED_MODULE_1__.CODEC_NAME; // Codec name from my constants.ts file
+}
+// Change the file path here as needed (`../` is go backwards a folder)
+var EASING_CSS = (__webpack_require__(/*! ../../../resources/easing_keyframes.css */ "./resources/easing_keyframes.css").toString)();
 var BAR_MENU_IDS = new Set();
 function loadMahiKeyframeEasings() {
+    // Add our custom keyframe easing CSS for the keyframe icons
+    Blockbench.addCSS(EASING_CSS);
     // Listen to Blockbench events for various activities
     Blockbench.on("update_keyframe_selection", createEasingMenu);
+    Blockbench.on("render_frame", renderCustomKeyframeIcons);
     // Monkeypatch custom easing function which handles a keyframe's "easing" property
     // @ts-ignore
     (0,_utils__WEBPACK_IMPORTED_MODULE_0__.addMonkeypatch)(Keyframe, "prototype", "getLerp", monkeypatchMahiKeyframeLerping);
@@ -406,17 +717,20 @@ function loadMahiKeyframeEasings() {
 function unloadMahiKeyframeEasings() {
     // Remove our listened events
     Blockbench.removeListener("update_keyframe_selection", createEasingMenu);
+    Blockbench.removeListener("render_frame", renderCustomKeyframeIcons);
     // Monkeypatches are automatically removed in the index.ts unload function
 }
 var createEasingMenu = function () {
+    // Remove all added menus to prevent duplication - if they should still be visible, they'll be recreated here
+    // Needs to be removed regardless of if custom easings should apply to this project in case of project tab switch
+    BAR_MENU_IDS.forEach(function (barId) {
+        $("#".concat(barId)).remove(); // Prevent added inputs from duplicating somehow
+    });
     if (!applyToProject())
         return; // Don't apply to projects this shouldn't be applied too
     if (!document.getElementById("panel_keyframe"))
         return; // Don't apply if no keyframe panel
-    // Remove all added menus to prevent duplication - if they should still be visible, they'll be recreated here
-    BAR_MENU_IDS.forEach(function (barId) {
-        $("#".concat(barId)).remove(); // Prevent added inputs from duplicating somehow
-    });
+    // List of all available easing types
     var easingBar = createAndAppendKeyframeBar("easing");
     // Add all easing types to the easing bar
     for (var easingKey in _easingTypes__WEBPACK_IMPORTED_MODULE_3__.EASING_TYPES) {
@@ -438,6 +752,7 @@ var createEasingMenu = function () {
         // EasingTypes always have an "in" function, but may not have an "out" or "inOut" function
         // If they have either an "out" or "inOut", display both that one and the "in" as an option
         if (easingType.out || easingType.inOut) {
+            // List of all available fade types
             var fadeBar = createAndAppendKeyframeBar("easing_fade", "Fade");
             addFadeTypeButton(fadeBar, "in", "In", _easingTypes__WEBPACK_IMPORTED_MODULE_3__.FADE_IN_SVG);
             if (easingType.out)
@@ -453,12 +768,7 @@ var createEasingMenu = function () {
 };
 // Adds an element to the easing bar which has an SVG icon and sets the easing type of all selected keyframes on click
 function addEasingTypeButton(easingBar, easingId, easingType) {
-    // const div: HTMLDivElement = document.createElement("div");
-    // div.innerHTML = easingType.svg;
-    // div.id = "kf_easing_type_" + easingId;
-    // div.setAttribute("style", "stroke:var(--color-text); margin:0px; padding:3px; width:30px; height: 30px");
-    // div.setAttribute("title", `Switch to ${capitalize(easingId)} easing`);
-    var div = createButtonElement("kf_easing_type_".concat(easingId), "Switch to ".concat((0,_utils__WEBPACK_IMPORTED_MODULE_0__.capitalize)(easingId), " easing"), easingType.svg);
+    var div = createButtonElement("kf_easing_type_".concat(easingId), "Switch to ".concat((0,_utils__WEBPACK_IMPORTED_MODULE_0__.capitalize)(easingId), " easing"), easingType.selectSvg);
     div.onclick = function () {
         // Start the undo-able edit, adding all the currently selected keyframes
         Undo.initEdit({ keyframes: Timeline.selected });
@@ -484,11 +794,12 @@ function addFadeTypeButton(fadeBar, fadeId, fadeName, svg) {
 }
 function createAndAppendKeyframeBar(id, name) {
     if (name === void 0) { name = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.capitalize)(id); }
-    var barId = "keyframe_bar_".concat(id);
+    var barId = "".concat(keyframeProjectId, "_keyframe_bar_").concat(id);
     // Keep track of all created bar menu ids so they can be removed before creating them again
     // I opted to keep track of them instead of removing them before creating them again
     // because menus may need to be removed without being recreated(e.g. remove fade menu without having fade options)
     BAR_MENU_IDS.add(barId);
+    // Get the keyframe panel and append our menu to it
     var keyframePanel = document.getElementById("panel_keyframe");
     var bar = document.createElement("div");
     keyframePanel.appendChild(bar);
@@ -503,6 +814,36 @@ function createButtonElement(id, title, innerHTML) {
     div.setAttribute("style", "stroke:var(--color-text); margin:0px; padding:3px; width:30px; height:30px");
     div.setAttribute("title", title);
     return div;
+}
+function renderCustomKeyframeIcons() {
+    if (!applyToProject())
+        return;
+    Timeline.keyframes.forEach(function (keyframe) {
+        updateKeyframeIcon(keyframe);
+    });
+}
+function updateKeyframeIcon(keyframe) {
+    var element = document.getElementById(keyframe.uuid);
+    if (element && element.children && keyframe["easing"]) {
+        var easingKey = keyframe["easing"];
+        var easingType = _easingTypes__WEBPACK_IMPORTED_MODULE_3__.EASING_TYPES[easingKey];
+        if (!easingType.keyframeBackground)
+            return;
+        var fadeType = keyframe["easing_fade"];
+        var keyframeBackground = easingType.keyframeBackground.inOutIcon; // if no fade type or fade type is "inout"
+        if (fadeType == "in" && easingType.keyframeBackground.inIcon) {
+            keyframeBackground = easingType.keyframeBackground.inIcon;
+        }
+        else if (fadeType == "out" && easingType.keyframeBackground.outIcon) {
+            keyframeBackground = easingType.keyframeBackground.outIcon;
+        }
+        element.children[0].className = keyframeBackground;
+        if (easingType.keyframeIcon) {
+            var icon = document.createElement("i");
+            icon.className = easingType.keyframeIcon;
+            element.children[element.children.length] = icon;
+        }
+    }
 }
 function getSelectedKeyframesEasingKey() {
     return getSelectedKeyframesProperty("easing", "linear");
@@ -546,9 +887,6 @@ function monkeypatchMahiKeyframeLerping(other, axis, amount, allow_expression) {
     }
     return 0;
 }
-function applyToProject() {
-    return Format.id === _constants__WEBPACK_IMPORTED_MODULE_1__.CODEC_NAME; // Codec name from my constants.ts file
-}
 
 
 /***/ },
@@ -559,6 +897,7 @@ function applyToProject() {
   \*****************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   MAHI_CODEC: () => (/* binding */ MAHI_CODEC),
@@ -647,6 +986,7 @@ function isFormatMahiEntity() {
   \*********************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ANIMATION_CLASS_PROPERTY: () => (/* binding */ ANIMATION_CLASS_PROPERTY),
@@ -988,6 +1328,7 @@ function isMahiProject() {
   \********************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   CLASS_COMMENT_INFO: () => (/* binding */ CLASS_COMMENT_INFO),
@@ -1044,6 +1385,7 @@ function getTemplateOptionNames(whitespace) {
   \***************************************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ANIMATION_TEMPLATE_1_21_11: () => (/* binding */ ANIMATION_TEMPLATE_1_21_11),
@@ -1170,6 +1512,7 @@ var ANIMATION_TEMPLATE_26_1_SNAPSHOT_1 = new AnimationTemplate(__assign(__assign
   \*****************************************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   RENDER_STATE_TEMPLATE_1_21_11: () => (/* binding */ RENDER_STATE_TEMPLATE_1_21_11),
@@ -1228,6 +1571,7 @@ var RENDER_STATE_TEMPLATE_26_1_SNAPSHOT_1 = new RenderStateTemplate(__assign({},
   \**********************************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   FileBuilder: () => (/* binding */ FileBuilder),
@@ -1343,6 +1687,7 @@ function toFloat(number) {
   \*********************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Monkeypatches: () => (/* binding */ Monkeypatches),
@@ -1396,6 +1741,17 @@ function capitalize(str) {
 }
 
 
+/***/ },
+
+/***/ "data:font/woff;base64,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"
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** data:font/woff;base64,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 ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+(module) {
+
+"use strict";
+module.exports = "data:font/woff;base64,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";
+
 /***/ }
 
 /******/ 	});
@@ -1418,7 +1774,7 @@ function capitalize(str) {
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
+/******/ 			id: moduleId,
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
@@ -1430,7 +1786,22 @@ function capitalize(str) {
 /******/ 		return module.exports;
 /******/ 	}
 /******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -1459,10 +1830,34 @@ function capitalize(str) {
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/require chunk loading */
+/******/ 	(() => {
+/******/ 		__webpack_require__.b = require("node:url").pathToFileURL(__filename);
+/******/ 		
+/******/ 		// object to store loaded chunks
+/******/ 		// "1" means "loaded", otherwise not loaded yet
+/******/ 		var installedChunks = {
+/******/ 			"main": 1
+/******/ 		};
+/******/ 		
+/******/ 		// no on chunks loaded
+/******/ 		
+/******/ 		// no chunk install function needed
+/******/ 		
+/******/ 		// no chunk loading
+/******/ 		
+/******/ 		// no external install chunk
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 	})();
+/******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
 (() => {
+"use strict";
 /*!*********************!*\
   !*** ./ts/index.ts ***!
   \*********************/
