@@ -19,7 +19,7 @@ Some user-facing things like icons and button placements have been intentionally
  */
 
 // Replace this with a special identifier - used to remove the buttons/bars without messing up other project types.
-const keyframeProjectId: string = "mahi";
+const KEYFRAME_PROJECT_ID: string = "mahi";
 
 // Replace the CODEC_NAME with your plugin's format id.
 function applyToProject(): boolean {
@@ -29,7 +29,8 @@ function applyToProject(): boolean {
 // Change the file path here as needed (`../` is go backwards a folder)
 const EASING_CSS = require("../../../resources/easing_keyframes.css").toString();
 
-const BAR_MENU_IDS: Set<string> = new Set();
+const EASING_BAR_ID = `${KEYFRAME_PROJECT_ID}_easing_bar`
+const FADE_BAR_ID = `${KEYFRAME_PROJECT_ID}_fade_bar`
 
 export function loadMahiKeyframeEasings(): void {
     // Add our custom keyframe easing CSS for the keyframe icons
@@ -54,16 +55,15 @@ export function unloadMahiKeyframeEasings(): void {
 const createEasingMenu = () => {
     // Remove all added menus to prevent duplication - if they should still be visible, they'll be recreated here
     // Needs to be removed regardless of if custom easings should apply to this project in case of project tab switch
-    BAR_MENU_IDS.forEach((barId) => {
-        $(`#${barId}`).remove(); // Prevent added inputs from duplicating somehow
-    })
+    $(`#${EASING_BAR_ID}`).remove();
+    $(`#${FADE_BAR_ID}`).remove();
 
     if(!applyToProject()) return; // Don't apply to projects this shouldn't be applied too
     if(!document.getElementById("panel_keyframe")) return; // Don't apply if no keyframe panel
 
 
     // List of all available easing types
-    let easingBar: HTMLElement = createAndAppendKeyframeBar("easing");
+    let easingBar: HTMLElement = createAndAppendKeyframeBar(EASING_BAR_ID, "Easing");
 
     // Add all easing types to the easing bar
     for (let easingKey in EASING_TYPES) {
@@ -91,7 +91,7 @@ const createEasingMenu = () => {
         // If they have either an "out" or "inOut", display both that one and the "in" as an option
         if(easingType.out || easingType.inOut) {
             // List of all available fade types
-            let fadeBar: HTMLElement = createAndAppendKeyframeBar("easing_fade", "Fade");
+            let fadeBar: HTMLElement = createAndAppendKeyframeBar(FADE_BAR_ID, "Fade");
             addFadeTypeButton(fadeBar, "in", "In", FADE_IN_SVG);
 
             if(easingType.out)
@@ -110,9 +110,10 @@ const createEasingMenu = () => {
 
 // Adds an element to the easing bar which has an SVG icon and sets the easing type of all selected keyframes on click
 function addEasingTypeButton(easingBar: HTMLElement, easingId: string, easingType: EasingType): void {
+    let easingName = easingType.name ? easingType.name : capitalize(easingId);
     const div: HTMLElement = createButtonElement(
         `kf_easing_type_${easingId}`,
-        `Switch to ${capitalize(easingId)} easing`,
+        `Switch to ${easingName} easing`,
         easingType.selectSvg
     );
 
@@ -147,25 +148,18 @@ function addFadeTypeButton(fadeBar: HTMLElement, fadeId: string, fadeName: strin
     fadeBar.appendChild(div);
 }
 
-function createAndAppendKeyframeBar(id: string, name: string = capitalize(id)): HTMLElement {
-    let barId = `${keyframeProjectId}_keyframe_bar_${id}`;
-
-    // Keep track of all created bar menu ids so they can be removed before creating them again
-    // I opted to keep track of them instead of removing them before creating them again
-    // because menus may need to be removed without being recreated(e.g. remove fade menu without having fade options)
-    BAR_MENU_IDS.add(barId);
-
+function createAndAppendKeyframeBar(id: string, name: string): HTMLElement {
     // Get the keyframe panel and append our menu to it
     const keyframePanel = document.getElementById("panel_keyframe");
     let bar: HTMLElement = document.createElement("div");
     keyframePanel.appendChild(bar);
 
     bar.outerHTML =
-        `<div class="bar flex" style="flex-wrap: wrap" id=${barId}>
+        `<div class="bar flex" style="flex-wrap: wrap" id="${id}">
             <label class="tl" style="font-weight: bolder; min-width: 47px;">${name}</label>
         </div>`;
 
-    return document.getElementById(barId);
+    return document.getElementById(id);
 }
 
 function createButtonElement(id: string, title: string, innerHTML: string): HTMLElement {
