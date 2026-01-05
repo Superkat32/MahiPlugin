@@ -1,6 +1,6 @@
 import {addMonkeypatch, capitalize, Monkeypatches} from "../../utils";
 import {CODEC_NAME} from "../../constants";
-import {easeInSine, lerp} from "./easings";
+import {lerp} from "./easings";
 import {EASING_TYPES, EasingType, FADE_IN_OUT_SVG, FADE_IN_SVG, FADE_OUT_SVG} from "./easingTypes";
 
 /*
@@ -186,21 +186,18 @@ function renderCustomKeyframeIcons() {
 }
 
 function updateKeyframeIcon(keyframe: _Keyframe) {
-    const element = document.getElementById(keyframe.uuid);
+    const element: HTMLElement = document.getElementById(keyframe.uuid);
 
     if(element && element.children && keyframe["easing"]) {
         let easingKey: string = keyframe["easing"];
         let easingType: EasingType = EASING_TYPES[easingKey];
-
-        if(!easingType.keyframeBackground) return;
-
         let fadeType: string = keyframe["easing_fade"];
 
-        let keyframeBackground: string = easingType.keyframeBackground.inOutIcon; // if no fade type or fade type is "inout"
-        if (fadeType == "in" && easingType.keyframeBackground.inIcon) {
-            keyframeBackground = easingType.keyframeBackground.inIcon;
-        } else if (fadeType == "out" && easingType.keyframeBackground.outIcon) {
-            keyframeBackground = easingType.keyframeBackground.outIcon;
+        let keyframeBackground: string = easingType.keyframeIconSet.inOutIcon;
+        if (fadeType == "in" && easingType.keyframeIconSet.inIcon) {
+            keyframeBackground = easingType.keyframeIconSet.inIcon;
+        } else if (fadeType == "out" && easingType.keyframeIconSet.outIcon) {
+            keyframeBackground = easingType.keyframeIconSet.outIcon;
         }
 
         element.children[0].className = keyframeBackground;
@@ -241,14 +238,29 @@ function monkeypatchMahiKeyframeLerping(other, axis, amount, allow_expression) {
         return Monkeypatches.get(Keyframe).getLerp.apply(this, arguments); // Return original getLerp function
     }
 
-    const easing = other["easing"] || "defaultEasing";
-    const easeAmount = easeInSine(amount);
-    const start = this.data_points.length == 1 ? this.calc(axis) : this.calc(axis, 1);
-    const end = other.calc(axis);
-    const result = lerp(start, end, easeAmount);
+    const easingKey: string = other["easing"] || "linear";
+    const easingType: EasingType = EASING_TYPES[easingKey];
+    if(easingType) {
+        let easeAmount = easingType.in(amount);
+        if(other["easing_fade"]) {
+            let fadeType = other["easing_fade"];
+            if(fadeType === "out" && easingType.out)
+                easeAmount = easingType.out(amount);
 
-    if(!Number.isNaN(result)) {
-        return result;
+            if(fadeType === "inout" && easingType.inOut)
+                easeAmount = easingType.inOut(amount);
+        }
+
+        const start = this.data_points.length == 1 ? this.calc(axis) : this.calc(axis, 1);
+        const end = other.calc(axis);
+        const result = lerp(start, end, easeAmount);
+
+        if(!Number.isNaN(result)) {
+            return result;
+        }
+
     }
-    return 0;
+
+    // @ts-ignore
+    return Monkeypatches.get(Keyframe).getLerp.apply(this, arguments); // Backup original return in case of error
 }
