@@ -25,7 +25,23 @@ interface KeyframeTypes {
 interface EasingTypes {
     linear: string
     catmullrom: string
-    custom: string
+
+    sine: EaseSet
+    quad: EaseSet
+    cubic: EaseSet
+    quart: EaseSet
+    quint: EaseSet
+    expo: EaseSet
+    circ: EaseSet
+    back: EaseSet
+    elastic: EaseSet
+    bounce: EaseSet
+}
+
+interface EaseSet {
+    in?: string,
+    out?: string,
+    inout?: string,
 }
 
 export class AnimationTemplate {
@@ -61,14 +77,14 @@ export class AnimationTemplate {
                     let keyframeStrings: string[] = [];
 
                     keyframes.forEach((keyframe, index) => {
-                        let keyframeString = this.addKeyframe(channelId, keyframe.time, keyframe.calc("x"), keyframe.calc("y"), keyframe.calc("z"), keyframe.interpolation);
+                        let keyframeString = this.addKeyframe(channelId, keyframe.time, keyframe.calc("x"), keyframe.calc("y"), keyframe.calc("z"), keyframe.interpolation, keyframe["easing"], keyframe["easing_fade"]);
                         keyframeStrings.push(keyframeString);
                         if (keyframe.data_points[1]) {
-                            let keyframeString1 = this.addKeyframe(channelId, keyframe.time+0.001, keyframe.calc("x", 1), keyframe.calc("y", 1), keyframe.calc("z", 1), keyframe.interpolation);
+                            let keyframeString1 = this.addKeyframe(channelId, keyframe.time+0.001, keyframe.calc("x", 1), keyframe.calc("y", 1), keyframe.calc("z", 1), keyframe.interpolation, keyframe["easing"], keyframe["easing_fade"]);
                             keyframeStrings.push(keyframeString1);
                         } else if (keyframe.interpolation == "step" && keyframes[index+1]) {
                             let nextKeyframe = keyframes[index+1];
-                            let nextKeyframeString = this.addKeyframe(channelId, nextKeyframe.time-0.001, keyframe.calc("x"), keyframe.calc("y"), keyframe.calc("z"), "linear");
+                            let nextKeyframeString = this.addKeyframe(channelId, nextKeyframe.time-0.001, keyframe.calc("x"), keyframe.calc("y"), keyframe.calc("z"), "linear", undefined, undefined);
                             keyframeStrings.push(nextKeyframeString);
                         }
                     });
@@ -90,7 +106,7 @@ export class AnimationTemplate {
         return file.build();
     }
 
-    private addKeyframe(channelId: string, time: number, x: number, y: number, z: number, easing: string): string {
+    private addKeyframe(channelId: string, time: number, x: number, y: number, z: number, interpolation: string, easing: string, easingFade: string): string {
         if(channelId == "position") x *= -1;
         if(channelId == "rotation") {
             x *= -1;
@@ -102,7 +118,20 @@ export class AnimationTemplate {
         keyframeBuilder.replaceVar("x", toFloat(x));
         keyframeBuilder.replaceVar("y", toFloat(y));
         keyframeBuilder.replaceVar("z", toFloat(z));
-        keyframeBuilder.replaceVar("easing", this.config.easingTypes[easing] || this.config.easingTypes.linear);
+
+        let easingType: string = this.config.easingTypes.linear;
+        if(easing && this.config.easingTypes[easing]) {
+            let ease = this.config.easingTypes[easing];
+            if(ease[easingFade]) {
+                easingType = ease[easingFade];
+            } else {
+                easingType = ease;
+            }
+        } else if(interpolation && this.config.easingTypes[interpolation]) {
+            easingType = this.config.easingTypes[interpolation];
+        }
+
+        keyframeBuilder.replaceVar("easing", easingType || this.config.easingTypes.linear);
         return keyframeBuilder.build();
     }
 }
@@ -128,7 +157,16 @@ public class %(animation_class) {
     easingTypes: {
         linear: "AnimationChannel.Interpolations.LINEAR",
         catmullrom: "AnimationChannel.Interpolations.CATMULLROM",
-        custom: "YAY"
+        sine: mahiEaseSet("SINE"),
+        quad: mahiEaseSet("QUAD"),
+        cubic: mahiEaseSet("CUBIC"),
+        quart: mahiEaseSet("QUART"),
+        quint: mahiEaseSet("QUINT"),
+        expo: mahiEaseSet("EXPO"),
+        circ: mahiEaseSet("CIRC"),
+        back: mahiEaseSet("BACK"),
+        elastic: mahiEaseSet("ELASTIC"),
+        bounce: mahiEaseSet("BOUNCE")
     }
 })
 
@@ -136,3 +174,11 @@ export const ANIMATION_TEMPLATE_26_1_SNAPSHOT_1: AnimationTemplate = new Animati
     ...ANIMATION_TEMPLATE_1_21_11.config,
     looping: ".loop()"
 })
+
+export function mahiEaseSet(name: string): EaseSet {
+    return {
+        in: `MahiInterpolations.EASE_IN_${name}`,
+        out: `MahiInterpolations.EASE_OUT_${name}`,
+        inout: `MahiInterpolations.EASE_IN_OUT_${name}`,
+    }
+}

@@ -142,6 +142,8 @@ function icon(name: string, onlyInOut: boolean = false): EasingKeyframeIconSet {
     }
 }
 
+export type FadeType = "in" | "out" | "inout"
+
 export interface Easings {
     [key: string]: EasingType
 }

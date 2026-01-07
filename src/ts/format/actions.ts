@@ -1,4 +1,4 @@
-import {isFormatMahiEntity} from "./format";
+import {isFormatMahiEntity, MAHI_CODEC} from "./format";
 import {CODEC_NAME} from "../constants";
 import {addMonkeypatch, Monkeypatches} from "../utils";
 import {openMahiProjectSettingsDialog} from "./properties";
@@ -223,7 +223,7 @@ function exportProject(exportFormResults: any, animationFormResults?: any, anima
 }
 
 function exportModel(): void {
-
+    MAHI_CODEC.export();
 }
 
 function exportAnimation(animationFormResult: any, animationKeys: any): void {

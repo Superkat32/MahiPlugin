@@ -73,18 +73,6 @@ and input the encoded string in the \`src: url("data:font/woff;base64,<encoded s
     -moz-osx-font-smoothing: grayscale;
 }
 
-
-.easing-square-in:before {
-    /*noinspection CssNoGenericFontName*/
-    font-family: "keyframe-square-icomoon" !important;
-    content: "\\e900";
-}
-.easing-square-out:before {
-    /*noinspection CssNoGenericFontName*/
-    font-family: "keyframe-square-icomoon" !important;
-    content: "\\e901";
-}
-
 .easing-linear:before {
     content: "\\e925";
 }
@@ -180,6 +168,17 @@ and input the encoded string in the \`src: url("data:font/woff;base64,<encoded s
 }
 .easing-in_out_bounce:before {
     content: "\\e920";
+}
+
+.easing-square-in:before {
+    /*noinspection CssNoGenericFontName*/
+    font-family: "keyframe-square-icomoon" !important;
+    content: "\\e900";
+}
+.easing-square-out:before {
+    /*noinspection CssNoGenericFontName*/
+    font-family: "keyframe-square-icomoon" !important;
+    content: "\\e901";
 }`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
@@ -615,6 +614,7 @@ function exportProject(exportFormResults, animationFormResults, animationKeys) {
     }
 }
 function exportModel() {
+    _format__WEBPACK_IMPORTED_MODULE_0__.MAHI_CODEC.export();
 }
 function exportAnimation(animationFormResult, animationKeys) {
     var animationTemplate = (0,_templates__WEBPACK_IMPORTED_MODULE_4__.getProjectTemplateSet)().animation;
@@ -1028,7 +1028,7 @@ function loadMahiKeyframeEasings() {
     Blockbench.on("render_frame", renderCustomKeyframeIcons);
     // Monkeypatch custom easing function which handles a keyframe's "easing" property
     // @ts-ignore
-    (0,_utils__WEBPACK_IMPORTED_MODULE_0__.addMonkeypatch)(Keyframe, "prototype", "getLerp", monkeypatchMahiKeyframeLerping);
+    (0,_utils__WEBPACK_IMPORTED_MODULE_0__.addMonkeypatch)(Keyframe, "prototype", "getLerp", monkeypatchCustomKeyframeLerping);
 }
 function unloadMahiKeyframeEasings() {
     // Remove our listened events
@@ -1045,12 +1045,14 @@ var createEasingMenu = function () {
         return; // Don't apply to projects this shouldn't be applied too
     if (!document.getElementById("panel_keyframe"))
         return; // Don't apply if no keyframe panel
-    // List of all available easing types
-    var easingBar = createAndAppendKeyframeBar(EASING_BAR_ID, "Easing");
-    // Add all easing types to the easing bar
-    for (var easingKey in _easingTypes__WEBPACK_IMPORTED_MODULE_3__.EASING_TYPES) {
-        var easingType = _easingTypes__WEBPACK_IMPORTED_MODULE_3__.EASING_TYPES[easingKey];
-        addEasingTypeButton(easingBar, easingKey, easingType);
+    if (Timeline.selected.length > 0) {
+        // List of all available easing types
+        var easingBar = createAndAppendKeyframeBar(EASING_BAR_ID, "Easing");
+        // Add all easing types to the easing bar
+        for (var easingKey in _easingTypes__WEBPACK_IMPORTED_MODULE_3__.EASING_TYPES) {
+            var easingType = _easingTypes__WEBPACK_IMPORTED_MODULE_3__.EASING_TYPES[easingKey];
+            addEasingTypeButton(easingBar, easingKey, easingType);
+        }
     }
     var selectedEasingKey = getSelectedKeyframesEasingKey();
     // Highlight the selected easing type by making its color the accent color (blue by default)
@@ -1175,7 +1177,7 @@ function getSelectedKeyframesProperty(property, defaultValue, conflictValue) {
         return defaultValue;
     }
 }
-function monkeypatchMahiKeyframeLerping(other, axis, amount, allow_expression) {
+function monkeypatchCustomKeyframeLerping(other, axis, amount, allow_expression) {
     if (!applyToProject()) { // Don't apply custom easings if the project is not a Mahi Entity project
         // @ts-ignore
         return _utils__WEBPACK_IMPORTED_MODULE_0__.Monkeypatches.get(Keyframe).getLerp.apply(this, arguments); // Return original getLerp function
@@ -1183,6 +1185,7 @@ function monkeypatchMahiKeyframeLerping(other, axis, amount, allow_expression) {
     var easingKey = other["easing"] || "linear";
     var easingType = _easingTypes__WEBPACK_IMPORTED_MODULE_3__.EASING_TYPES[easingKey];
     if (easingType) {
+        // Default to fade in
         var easeAmount = easingType.in(amount);
         if (other["easing_fade"]) {
             var fadeType = other["easing_fade"];
@@ -1234,6 +1237,11 @@ var MAHI_CODEC = new Codec(_constants__WEBPACK_IMPORTED_MODULE_0__.CODEC_NAME, {
         extensions: ["java"],
     },
     compile: function (options) {
+        var test = {};
+        test.aaa = "aaa";
+        test.bbb = "bbb";
+        test.ccc = true;
+        return autoStringify(test);
     },
     parse: function (data, path, args) {
     },
@@ -1704,7 +1712,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ANIMATION_TEMPLATE_1_21_11: () => (/* binding */ ANIMATION_TEMPLATE_1_21_11),
 /* harmony export */   ANIMATION_TEMPLATE_26_1_SNAPSHOT_1: () => (/* binding */ ANIMATION_TEMPLATE_26_1_SNAPSHOT_1),
-/* harmony export */   AnimationTemplate: () => (/* binding */ AnimationTemplate)
+/* harmony export */   AnimationTemplate: () => (/* binding */ AnimationTemplate),
+/* harmony export */   mahiEaseSet: () => (/* binding */ mahiEaseSet)
 /* harmony export */ });
 /* harmony import */ var _templateUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./templateUtils */ "./ts/format/templates/templateUtils.ts");
 var __assign = (undefined && undefined.__assign) || function () {
@@ -1748,15 +1757,15 @@ var AnimationTemplate = /** @class */ (function () {
                     var keyframes = animator[channelId].slice().sort(function (a, b) { return a.time - b.time; });
                     var keyframeStrings = [];
                     keyframes.forEach(function (keyframe, index) {
-                        var keyframeString = _this.addKeyframe(channelId, keyframe.time, keyframe.calc("x"), keyframe.calc("y"), keyframe.calc("z"), keyframe.interpolation);
+                        var keyframeString = _this.addKeyframe(channelId, keyframe.time, keyframe.calc("x"), keyframe.calc("y"), keyframe.calc("z"), keyframe.interpolation, keyframe["easing"], keyframe["easing_fade"]);
                         keyframeStrings.push(keyframeString);
                         if (keyframe.data_points[1]) {
-                            var keyframeString1 = _this.addKeyframe(channelId, keyframe.time + 0.001, keyframe.calc("x", 1), keyframe.calc("y", 1), keyframe.calc("z", 1), keyframe.interpolation);
+                            var keyframeString1 = _this.addKeyframe(channelId, keyframe.time + 0.001, keyframe.calc("x", 1), keyframe.calc("y", 1), keyframe.calc("z", 1), keyframe.interpolation, keyframe["easing"], keyframe["easing_fade"]);
                             keyframeStrings.push(keyframeString1);
                         }
                         else if (keyframe.interpolation == "step" && keyframes[index + 1]) {
                             var nextKeyframe = keyframes[index + 1];
-                            var nextKeyframeString = _this.addKeyframe(channelId, nextKeyframe.time - 0.001, keyframe.calc("x"), keyframe.calc("y"), keyframe.calc("z"), "linear");
+                            var nextKeyframeString = _this.addKeyframe(channelId, nextKeyframe.time - 0.001, keyframe.calc("x"), keyframe.calc("y"), keyframe.calc("z"), "linear", undefined, undefined);
                             keyframeStrings.push(nextKeyframeString);
                         }
                     });
@@ -1776,7 +1785,7 @@ var AnimationTemplate = /** @class */ (function () {
         file.replaceVar("animations", animationStrings.join("\n\n\t"));
         return file.build();
     };
-    AnimationTemplate.prototype.addKeyframe = function (channelId, time, x, y, z, easing) {
+    AnimationTemplate.prototype.addKeyframe = function (channelId, time, x, y, z, interpolation, easing, easingFade) {
         if (channelId == "position")
             x *= -1;
         if (channelId == "rotation") {
@@ -1788,7 +1797,20 @@ var AnimationTemplate = /** @class */ (function () {
         keyframeBuilder.replaceVar("x", (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.toFloat)(x));
         keyframeBuilder.replaceVar("y", (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.toFloat)(y));
         keyframeBuilder.replaceVar("z", (0,_templateUtils__WEBPACK_IMPORTED_MODULE_0__.toFloat)(z));
-        keyframeBuilder.replaceVar("easing", this.config.easingTypes[easing] || this.config.easingTypes.linear);
+        var easingType = this.config.easingTypes.linear;
+        if (easing && this.config.easingTypes[easing]) {
+            var ease = this.config.easingTypes[easing];
+            if (ease[easingFade]) {
+                easingType = ease[easingFade];
+            }
+            else {
+                easingType = ease;
+            }
+        }
+        else if (interpolation && this.config.easingTypes[interpolation]) {
+            easingType = this.config.easingTypes[interpolation];
+        }
+        keyframeBuilder.replaceVar("easing", easingType || this.config.easingTypes.linear);
         return keyframeBuilder.build();
     };
     return AnimationTemplate;
@@ -1812,10 +1834,26 @@ var ANIMATION_TEMPLATE_1_21_11 = new AnimationTemplate({
     easingTypes: {
         linear: "AnimationChannel.Interpolations.LINEAR",
         catmullrom: "AnimationChannel.Interpolations.CATMULLROM",
-        custom: "YAY"
+        sine: mahiEaseSet("SINE"),
+        quad: mahiEaseSet("QUAD"),
+        cubic: mahiEaseSet("CUBIC"),
+        quart: mahiEaseSet("QUART"),
+        quint: mahiEaseSet("QUINT"),
+        expo: mahiEaseSet("EXPO"),
+        circ: mahiEaseSet("CIRC"),
+        back: mahiEaseSet("BACK"),
+        elastic: mahiEaseSet("ELASTIC"),
+        bounce: mahiEaseSet("BOUNCE")
     }
 });
 var ANIMATION_TEMPLATE_26_1_SNAPSHOT_1 = new AnimationTemplate(__assign(__assign({}, ANIMATION_TEMPLATE_1_21_11.config), { looping: ".loop()" }));
+function mahiEaseSet(name) {
+    return {
+        in: "MahiInterpolations.EASE_IN_".concat(name),
+        out: "MahiInterpolations.EASE_OUT_".concat(name),
+        inout: "MahiInterpolations.EASE_IN_OUT_".concat(name),
+    };
+}
 
 
 /***/ },

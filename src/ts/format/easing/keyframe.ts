@@ -1,7 +1,7 @@
 import {addMonkeypatch, capitalize, Monkeypatches} from "../../utils";
 import {CODEC_NAME} from "../../constants";
 import {lerp} from "./easings";
-import {EASING_TYPES, EasingType, FADE_IN_OUT_SVG, FADE_IN_SVG, FADE_OUT_SVG} from "./easingTypes";
+import {EASING_TYPES, EasingType, FADE_IN_OUT_SVG, FADE_IN_SVG, FADE_OUT_SVG, FadeType} from "./easingTypes";
 
 /*
 File which handles all the custom easing stuff on keyframes.
@@ -32,6 +32,11 @@ const EASING_CSS = require("../../../resources/easing_keyframes.css").toString()
 const EASING_BAR_ID = `${KEYFRAME_PROJECT_ID}_easing_bar`
 const FADE_BAR_ID = `${KEYFRAME_PROJECT_ID}_fade_bar`
 
+interface EasingKeyframeOptions extends KeyframeOptions {
+    easing: EasingType
+    fade: FadeType
+}
+
 export function loadMahiKeyframeEasings(): void {
     // Add our custom keyframe easing CSS for the keyframe icons
     Blockbench.addCSS(EASING_CSS);
@@ -42,7 +47,7 @@ export function loadMahiKeyframeEasings(): void {
 
     // Monkeypatch custom easing function which handles a keyframe's "easing" property
     // @ts-ignore
-    addMonkeypatch(Keyframe, "prototype", "getLerp", monkeypatchMahiKeyframeLerping);
+    addMonkeypatch(Keyframe, "prototype", "getLerp", monkeypatchCustomKeyframeLerping);
 }
 
 export function unloadMahiKeyframeEasings(): void {
@@ -61,14 +66,15 @@ const createEasingMenu = () => {
     if(!applyToProject()) return; // Don't apply to projects this shouldn't be applied too
     if(!document.getElementById("panel_keyframe")) return; // Don't apply if no keyframe panel
 
+    if(Timeline.selected.length > 0) {
+        // List of all available easing types
+        let easingBar: HTMLElement = createAndAppendKeyframeBar(EASING_BAR_ID, "Easing");
 
-    // List of all available easing types
-    let easingBar: HTMLElement = createAndAppendKeyframeBar(EASING_BAR_ID, "Easing");
-
-    // Add all easing types to the easing bar
-    for (let easingKey in EASING_TYPES) {
-        let easingType: EasingType = EASING_TYPES[easingKey];
-        addEasingTypeButton(easingBar, easingKey, easingType);
+        // Add all easing types to the easing bar
+        for (let easingKey in EASING_TYPES) {
+            let easingType: EasingType = EASING_TYPES[easingKey];
+            addEasingTypeButton(easingBar, easingKey, easingType);
+        }
     }
 
     const selectedEasingKey: string = getSelectedKeyframesEasingKey();
@@ -226,7 +232,7 @@ function getSelectedKeyframesProperty(property: string, defaultValue: any, confl
     }
 }
 
-function monkeypatchMahiKeyframeLerping(other, axis, amount, allow_expression) {
+function monkeypatchCustomKeyframeLerping(other, axis, amount, allow_expression) {
     if (!applyToProject()) { // Don't apply custom easings if the project is not a Mahi Entity project
         // @ts-ignore
         return Monkeypatches.get(Keyframe).getLerp.apply(this, arguments); // Return original getLerp function
@@ -235,6 +241,7 @@ function monkeypatchMahiKeyframeLerping(other, axis, amount, allow_expression) {
     const easingKey: string = other["easing"] || "linear";
     const easingType: EasingType = EASING_TYPES[easingKey];
     if(easingType) {
+        // Default to fade in
         let easeAmount = easingType.in(amount);
         if(other["easing_fade"]) {
             let fadeType = other["easing_fade"];
@@ -252,7 +259,6 @@ function monkeypatchMahiKeyframeLerping(other, axis, amount, allow_expression) {
         if(!Number.isNaN(result)) {
             return result;
         }
-
     }
 
     // @ts-ignore
